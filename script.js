@@ -977,15 +977,3 @@ ${document.getElementById(
     });
 
 }
-
-function copiarWhatsappCompleto(){
-    alert("Completo OK");
-}
-
-function copiarWhatsappResumo(){
-    alert("Resumo OK");
-}
-
-function baixarImagemResumo(){
-    alert("Imagem OK");
-}
