@@ -254,3 +254,328 @@ function tratarDados(
     gerarAgrupamento();
 
 }
+
+// ========================================
+// AGRUPAMENTO
+// ========================================
+
+function gerarAgrupamento(){
+
+    agrupado = {};
+
+    dadosFiltrados.forEach(item=>{
+
+        const loja =
+        item.loja || "SEM LOJA";
+
+        const ptl =
+        item.ptl || "SEM PTL";
+
+        if(!agrupado[loja]){
+
+            agrupado[loja] = {};
+
+        }
+
+        if(!agrupado[loja][ptl]){
+
+            agrupado[loja][ptl] = [];
+
+        }
+
+        agrupado[loja][ptl].push(
+            item
+        );
+
+    });
+
+    atualizarKPIs();
+
+    renderizar();
+
+}
+
+// ========================================
+// KPIs
+// ========================================
+
+function atualizarKPIs(){
+
+    const lojas =
+    Object.keys(
+        agrupado
+    ).length;
+
+    let ptls = 0;
+
+    let skus = 0;
+
+    let volumes = 0;
+
+    Object.values(
+        agrupado
+    ).forEach(loja=>{
+
+        ptls +=
+        Object.keys(
+            loja
+        ).length;
+
+        Object.values(
+            loja
+        ).forEach(ptl=>{
+
+            skus +=
+            ptl.length;
+
+            ptl.forEach(item=>{
+
+                volumes +=
+                Number(
+                    item.volumes
+                ) || 0;
+
+            });
+
+        });
+
+    });
+
+    document.getElementById(
+        "kpiLojas"
+    ).textContent = lojas;
+
+    document.getElementById(
+        "kpiPtls"
+    ).textContent = ptls;
+
+    document.getElementById(
+        "kpiSkus"
+    ).textContent = skus;
+
+    document.getElementById(
+        "kpiVolumes"
+    ).textContent =
+    volumes.toLocaleString(
+        "pt-BR"
+    );
+
+}
+
+// ========================================
+// FILTROS
+// ========================================
+
+function aplicarFiltros(){
+
+    const lojaFiltro =
+    document
+    .getElementById(
+        "filtroLoja"
+    )
+    .value
+    .toLowerCase();
+
+    const ptlFiltro =
+    document
+    .getElementById(
+        "filtroPTL"
+    )
+    .value
+    .toLowerCase();
+
+    const skuFiltro =
+    document
+    .getElementById(
+        "filtroSKU"
+    )
+    .value
+    .toLowerCase();
+
+    dadosFiltrados =
+    dadosOriginais.filter(
+        item=>{
+
+            const okLoja =
+            item.loja
+            .toLowerCase()
+            .includes(
+                lojaFiltro
+            );
+
+            const okPTL =
+            item.ptl
+            .toLowerCase()
+            .includes(
+                ptlFiltro
+            );
+
+            const okSKU =
+            String(
+                item.sku
+            )
+            .toLowerCase()
+            .includes(
+                skuFiltro
+            );
+
+            return (
+                okLoja &&
+                okPTL &&
+                okSKU
+            );
+
+        }
+    );
+
+    gerarAgrupamento();
+
+}
+
+// ========================================
+// RENDERIZAÇÃO
+// ========================================
+
+function renderizar(){
+
+    if(
+        document
+        .activeElement
+        ?.id
+        ?.includes(
+            "filtro"
+        )
+    ){
+
+        aplicarFiltros();
+
+        return;
+    }
+
+    const resultado =
+    document.getElementById(
+        "resultado"
+    );
+
+    resultado.innerHTML = "";
+
+    const lojas =
+    Object.keys(
+        agrupado
+    )
+    .sort(
+        (
+            a,
+            b
+        )=>
+        Number(a) -
+        Number(b)
+    );
+
+    lojas.forEach(loja=>{
+
+        const cardLoja =
+        document.createElement(
+            "div"
+        );
+
+        cardLoja.className =
+        "loja-card";
+
+        cardLoja.innerHTML =
+        `
+        <div class="loja-titulo">
+            🏪 LOJA ${loja}
+        </div>
+        `;
+
+        const ptls =
+        Object.keys(
+            agrupado[loja]
+        ).sort();
+
+        ptls.forEach(ptl=>{
+
+            const itens =
+            agrupado[
+                loja
+            ][ptl];
+
+            let totalVolumes =
+            0;
+
+            itens.forEach(i=>{
+
+                totalVolumes +=
+                Number(
+                    i.volumes
+                ) || 0;
+
+            });
+
+            let htmlTabela =
+            `
+            <div class="ptl-card">
+
+                <div class="ptl-titulo">
+                    📦 ${ptl}
+                </div>
+
+                <table class="tabela">
+
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Descrição</th>
+                        <th>Volumes</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+            `;
+
+            itens.forEach(item=>{
+
+                htmlTabela +=
+                `
+                <tr>
+                    <td>${item.sku}</td>
+                    <td>${item.descricao}</td>
+                    <td>${item.volumes}</td>
+                </tr>
+                `;
+
+            });
+
+            htmlTabela +=
+            `
+                </tbody>
+                </table>
+
+                <div class="resumo-ptl">
+
+                    Itens:
+                    ${itens.length}
+
+                    |
+
+                    Volumes:
+                    ${totalVolumes}
+
+                </div>
+
+            </div>
+            `;
+
+            cardLoja.innerHTML +=
+            htmlTabela;
+
+        });
+
+        resultado.appendChild(
+            cardLoja
+        );
+
+    });
+
+}
