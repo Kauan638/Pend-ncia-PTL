@@ -396,39 +396,47 @@ function aplicarFiltros(){
     dadosOriginais.filter(
         item=>{
 
-            const okLoja =
-            item.loja
-            .toLowerCase()
-            .includes(
-                lojaFiltro
-            );
-
-            const okPTL =
-            item.ptl
-            .toLowerCase()
-            .includes(
-                ptlFiltro
-            );
-
-            const okSKU =
-            String(
-                item.sku
-            )
-            .toLowerCase()
-            .includes(
-                skuFiltro
-            );
-
             return (
-                okLoja &&
-                okPTL &&
-                okSKU
+                item.loja
+                    .toLowerCase()
+                    .includes(lojaFiltro)
+                &&
+                item.ptl
+                    .toLowerCase()
+                    .includes(ptlFiltro)
+                &&
+                String(item.sku)
+                    .toLowerCase()
+                    .includes(skuFiltro)
             );
 
         }
     );
 
-    gerarAgrupamento();
+    agrupado = {};
+
+    dadosFiltrados.forEach(item=>{
+
+        if(!agrupado[item.loja]){
+
+            agrupado[item.loja] = {};
+
+        }
+
+        if(!agrupado[item.loja][item.ptl]){
+
+            agrupado[item.loja][item.ptl] = [];
+
+        }
+
+        agrupado[item.loja][item.ptl]
+            .push(item);
+
+    });
+
+    atualizarKPIs();
+
+    renderizar();
 
 }
 
@@ -438,20 +446,12 @@ function aplicarFiltros(){
 
 function renderizar(){
 
-    if(
-        document
-        .activeElement
-        ?.id
-        ?.includes(
-            "filtro"
-        )
-    ){
+    const resultado =
+    document.getElementById(
+        "resultado"
+    );
 
-        aplicarFiltros();
-
-        return;
-    }
-
+    resultado.innerHTML = "";
     const resultado =
     document.getElementById(
         "resultado"
