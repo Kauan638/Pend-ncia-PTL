@@ -808,3 +808,24 @@ function(){
 `Faça upload do arquivo para gerar o relatório.`;
 
 };
+
+
+function copiarWhatsappCompleto(){
+    copiarWhatsapp();
+}
+
+function copiarWhatsappCompleto(){
+    copiarWhatsapp();
+}
+
+function copiarWhatsappResumo(){
+
+    // copiarWhatsappResumo()
+
+}
+
+function baixarImagemResumo(){
+
+    // baixarImagemResumo()
+
+}
