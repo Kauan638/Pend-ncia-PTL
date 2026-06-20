@@ -625,10 +625,7 @@ function gerarTextoWhatsapp(){
 
                 }
 
-                volumesPTL +=
-                Number(
-                    item.volumes
-                ) || 0;
+                volumesPTL++;
 
             });
 
@@ -637,7 +634,7 @@ function gerarTextoWhatsapp(){
 
             texto +=
 `📦 ${ptl}
-Itens: ${itens.length}
+SKUs: ${new Set(itens.map(i => i.sku)).size}
 Volumes: ${volumesPTL}
 
 `;
@@ -665,6 +662,7 @@ Volumes: ${totalVolumes.toLocaleString("pt-BR")}
     ).value = texto;
 
 }
+
 // ========================================
 // COPIAR WHATSAPP
 // ========================================
