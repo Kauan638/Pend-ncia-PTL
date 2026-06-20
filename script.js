@@ -292,33 +292,33 @@ function gerarAgrupamento(){
 function atualizarKPIs(){
 
     const lojas =
-    Object.keys(
-        agrupado
-    ).length;
+    Object.keys(agrupado).length;
 
     let ptls = 0;
 
-    let skus = 0;
-
     let volumes = 0;
 
-    Object.values(
-        agrupado
-    ).forEach(loja=>{
+    const skusUnicos =
+    new Set();
+
+    Object.values(agrupado)
+    .forEach(loja=>{
 
         ptls +=
-        Object.keys(
-            loja
-        ).length;
+        Object.keys(loja).length;
 
-        Object.values(
-            loja
-        ).forEach(ptl=>{
-
-            skus +=
-            ptl.length;
+        Object.values(loja)
+        .forEach(ptl=>{
 
             ptl.forEach(item=>{
+
+                if(item.sku){
+
+                    skusUnicos.add(
+                        item.sku
+                    );
+
+                }
 
                 volumes +=
                 Number(
@@ -341,7 +341,8 @@ function atualizarKPIs(){
 
     document.getElementById(
         "kpiSkus"
-    ).textContent = skus;
+    ).textContent =
+    skusUnicos.size;
 
     document.getElementById(
         "kpiVolumes"
