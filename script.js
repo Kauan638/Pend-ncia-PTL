@@ -197,6 +197,8 @@ function tratarDados(
     dados
 ){
 
+    console.log("COLUNAS:");
+console.log(Object.keys(dados[0]));
     dadosOriginais =
     dados.map(
         linha=>{
