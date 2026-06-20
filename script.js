@@ -997,3 +997,119 @@ function copiarWhatsappCompleto(){
     );
 
 }
+
+
+function copiarWhatsappResumo(){
+
+    gerarTextoWhatsapp();
+
+    const textoOriginal =
+    document.getElementById(
+        "textoWhatsapp"
+    ).value;
+
+    const linhas =
+    textoOriginal.split("\n");
+
+    const resumo = [];
+
+    resumo.push(
+        "🚨 PENDÊNCIAS PTL\n"
+    );
+
+    linhas.forEach(linha=>{
+
+        if(
+            linha.includes("Lojas:")
+            ||
+            linha.includes("PTLs:")
+            ||
+            linha.includes("SKUs:")
+            ||
+            linha.includes("Volumes:")
+        ){
+
+            resumo.push(linha);
+
+        }
+
+    });
+
+    navigator.clipboard.writeText(
+        resumo.join("\n")
+    );
+
+    alert(
+        "Resumo copiado!"
+    );
+
+}
+
+function baixarImagemResumo(){
+
+    gerarTextoWhatsapp();
+
+    const card =
+    document.createElement(
+        "div"
+    );
+
+    card.style.width =
+    "1000px";
+
+    card.style.padding =
+    "30px";
+
+    card.style.background =
+    "#ffffff";
+
+    card.style.color =
+    "#000000";
+
+    card.style.fontFamily =
+    "Segoe UI";
+
+    card.innerHTML = `
+
+        <h1>
+        🚨 Pendência PTL
+        </h1>
+
+        <pre style="
+            font-size:18px;
+            white-space:pre-wrap;
+        ">
+${document.getElementById(
+"textoWhatsapp"
+).value}
+        </pre>
+
+    `;
+
+    document.body.appendChild(
+        card
+    );
+
+    html2canvas(card)
+    .then(canvas=>{
+
+        const link =
+        document.createElement(
+            "a"
+        );
+
+        link.download =
+        "pendencia-ptl.png";
+
+        link.href =
+        canvas.toDataURL(
+            "image/png"
+        );
+
+        link.click();
+
+        card.remove();
+
+    });
+
+}
