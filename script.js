@@ -65,9 +65,7 @@ async function processarArquivo(){
 // LEITURA CSV
 // ========================================
 
-function lerCSV(
-    arquivo
-){
+function lerCSV(arquivo){
 
     const reader =
     new FileReader();
@@ -87,28 +85,24 @@ function lerCSV(
 
         const cabecalho =
         linhas[0]
-        .split("\t");
+        .split(";");
 
-        const dados =
-        [];
+        const dados = [];
 
         for(
-            let i=1;
-            i<linhas.length;
+            let i = 1;
+            i < linhas.length;
             i++
         ){
 
             const valores =
             linhas[i]
-            .split("\t");
+            .split(";");
 
             const obj = {};
 
             cabecalho.forEach(
-                (
-                    col,
-                    idx
-                )=>{
+                (col,idx)=>{
 
                     obj[
                         col.trim()
@@ -120,25 +114,25 @@ function lerCSV(
                 }
             );
 
-            dados.push(
-                obj
-            );
+            dados.push(obj);
 
         }
 
-        tratarDados(
-            dados
+        console.log(
+            "COLUNAS CSV:",
+            Object.keys(dados[0])
         );
+
+        tratarDados(dados);
 
     };
 
     reader.readAsText(
         arquivo,
-        "utf-8"
+        "latin1"
     );
 
 }
-
 // ========================================
 // LEITURA XLSX
 // ========================================
