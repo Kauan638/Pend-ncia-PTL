@@ -454,12 +454,6 @@ function renderizar(){
     );
 
     resultado.innerHTML = "";
-    const resultado =
-    document.getElementById(
-        "resultado"
-    );
-
-    resultado.innerHTML = "";
 
     const lojas =
     Object.keys(
