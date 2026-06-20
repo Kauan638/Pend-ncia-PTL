@@ -1,1 +1,121 @@
-<!DOCTYPE html><html lang='pt-BR'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Pendência PTL</title><link rel='stylesheet' href='style.css'><script src='https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js'></script></head><body><h1>🚨 Pendência PTL</h1><input type='file' id='arquivo'><button onclick='processarArquivo()'>Processar</button><div id='resultado'></div><textarea id='textoWhatsapp'></textarea><script src='script.js'></script></body></html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Pendência PTL</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>🚨 Pendência PTL</h1>
+
+<p>
+Relatório de pendências por loja e PTL
+</p>
+
+</header>
+
+<div class="upload">
+
+<input
+type="file"
+id="arquivo"
+accept=".csv,.xlsx,.xls">
+
+<button onclick="processarArquivo()">
+Processar Arquivo
+</button>
+
+</div>
+
+<section class="kpis">
+
+<div class="kpi">
+<span id="kpiLojas">0</span>
+<label>Lojas</label>
+</div>
+
+<div class="kpi">
+<span id="kpiPtls">0</span>
+<label>PTLs</label>
+</div>
+
+<div class="kpi">
+<span id="kpiSkus">0</span>
+<label>SKUs</label>
+</div>
+
+<div class="kpi">
+<span id="kpiVolumes">0</span>
+<label>Volumes</label>
+</div>
+
+</section>
+
+<section class="filtros">
+
+<input
+type="text"
+id="filtroLoja"
+placeholder="Filtrar Loja"
+onkeyup="renderizar()">
+
+<input
+type="text"
+id="filtroPTL"
+placeholder="Filtrar PTL"
+onkeyup="renderizar()">
+
+<input
+type="text"
+id="filtroSKU"
+placeholder="Filtrar SKU"
+onkeyup="renderizar()">
+
+</section>
+
+<section class="acoes">
+
+<button onclick="copiarWhatsapp()">
+📋 Copiar WhatsApp
+</button>
+
+<button onclick="exportarExcel()">
+📊 Exportar Excel
+</button>
+
+<button onclick="window.print()">
+🖨️ Imprimir
+</button>
+
+</section>
+
+<div id="resultado"></div>
+
+<section class="whatsapp">
+
+<h2>Texto WhatsApp</h2>
+
+<textarea
+id="textoWhatsapp"
+readonly>
+</textarea>
+
+</section>
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
