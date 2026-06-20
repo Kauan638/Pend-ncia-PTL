@@ -579,3 +579,248 @@ function renderizar(){
     });
 
 }
+
+// ========================================
+// TEXTO WHATSAPP
+// ========================================
+
+function gerarTextoWhatsapp(){
+
+    let texto =
+`🚨 PENDÊNCIAS PTL
+
+`;
+
+    let totalLojas = 0;
+    let totalPTLs = 0;
+    let totalSKUs = 0;
+    let totalVolumes = 0;
+
+    const lojas =
+    Object.keys(agrupado)
+    .sort(
+        (a,b)=>
+        Number(a)-Number(b)
+    );
+
+    lojas.forEach(loja=>{
+
+        totalLojas++;
+
+        texto +=
+`🏪 LOJA ${loja}
+
+`;
+
+        const ptls =
+        Object.keys(
+            agrupado[loja]
+        ).sort();
+
+        ptls.forEach(ptl=>{
+
+            totalPTLs++;
+
+            const itens =
+            agrupado[loja][ptl];
+
+            let volumesPTL = 0;
+
+            itens.forEach(item=>{
+
+                totalSKUs++;
+
+                volumesPTL +=
+                Number(
+                    item.volumes
+                ) || 0;
+
+            });
+
+            totalVolumes +=
+            volumesPTL;
+
+            texto +=
+`📦 ${ptl}
+Itens: ${itens.length}
+Volumes: ${volumesPTL}
+
+`;
+
+        });
+
+        texto +=
+`────────────────
+
+`;
+
+    });
+
+    texto +=
+`📊 RESUMO
+
+Lojas: ${totalLojas}
+PTLs: ${totalPTLs}
+SKUs: ${totalSKUs}
+Volumes: ${totalVolumes.toLocaleString("pt-BR")}
+`;
+
+    document.getElementById(
+        "textoWhatsapp"
+    ).value = texto;
+
+}
+
+// ========================================
+// COPIAR WHATSAPP
+// ========================================
+
+function copiarWhatsapp(){
+
+    gerarTextoWhatsapp();
+
+    const campo =
+    document.getElementById(
+        "textoWhatsapp"
+    );
+
+    campo.select();
+
+    document.execCommand(
+        "copy"
+    );
+
+    alert(
+        "Texto copiado!"
+    );
+
+}
+
+// ========================================
+// EXPORTAR EXCEL
+// ========================================
+
+function exportarExcel(){
+
+    const exportacao = [];
+
+    Object.keys(
+        agrupado
+    ).forEach(loja=>{
+
+        Object.keys(
+            agrupado[loja]
+        ).forEach(ptl=>{
+
+            agrupado[
+                loja
+            ][ptl]
+            .forEach(item=>{
+
+                exportacao.push({
+
+                    Loja:
+                    item.loja,
+
+                    PTL:
+                    item.ptl,
+
+                    SKU:
+                    item.sku,
+
+                    Descricao:
+                    item.descricao,
+
+                    Volumes:
+                    item.volumes,
+
+                    Master:
+                    item.master
+
+                });
+
+            });
+
+        });
+
+    });
+
+    const ws =
+    XLSX.utils.json_to_sheet(
+        exportacao
+    );
+
+    const wb =
+    XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(
+        wb,
+        ws,
+        "Pendencias"
+    );
+
+    XLSX.writeFile(
+        wb,
+        "Pendencia_PTL.xlsx"
+    );
+
+}
+
+// ========================================
+// RESUMO AUTOMÁTICO
+// ========================================
+
+function atualizarResumo(){
+
+    gerarTextoWhatsapp();
+
+}
+
+// ========================================
+// PROCESSAMENTO FINAL
+// ========================================
+
+const gerarAgrupamentoOriginal =
+gerarAgrupamento;
+
+gerarAgrupamento =
+function(){
+
+    gerarAgrupamentoOriginal();
+
+    atualizarResumo();
+
+};
+
+// ========================================
+// ATALHO ENTER FILTROS
+// ========================================
+
+document
+.querySelectorAll(
+    ".filtros input"
+)
+.forEach(input=>{
+
+    input.addEventListener(
+        "keyup",
+        ()=>{
+            aplicarFiltros();
+        }
+    );
+
+});
+
+// ========================================
+// CARREGAMENTO
+// ========================================
+
+window.onload =
+function(){
+
+    document.getElementById(
+        "textoWhatsapp"
+    ).value =
+`Faça upload do arquivo para gerar o relatório.`;
+
+};
