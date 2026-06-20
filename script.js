@@ -1045,53 +1045,119 @@ function copiarWhatsappResumo(){
 
 }
 
-function baixarImagemResumo(){
+async function baixarImagemResumo(){
 
-    gerarTextoWhatsapp();
+    const blocos = [];
 
-    const card =
-    document.createElement(
-        "div"
+    Object.keys(agrupado)
+    .sort((a,b)=>Number(a)-Number(b))
+    .forEach(loja=>{
+
+        Object.keys(
+            agrupado[loja]
+        )
+        .sort()
+        .forEach(ptl=>{
+
+            const itens =
+            agrupado[loja][ptl];
+
+            const skus =
+            new Set(
+                itens.map(
+                    i => i.sku
+                )
+            ).size;
+
+            const volumes =
+            itens.length;
+
+            blocos.push(
+`🏪 LOJA ${loja}
+📦 ${ptl}
+SKUs: ${skus}
+Volumes: ${volumes}`
+            );
+
+        });
+
+    });
+
+    const itensPorImagem = 10;
+
+    const paginas = [];
+
+    for(
+        let i = 0;
+        i < blocos.length;
+        i += itensPorImagem
+    ){
+
+        paginas.push(
+            blocos.slice(
+                i,
+                i + itensPorImagem
+            )
+        );
+
+    }
+
+    const totalPaginas =
+    Math.min(
+        paginas.length,
+        18
     );
 
-    card.style.width =
-    "1000px";
+    for(
+        let pagina = 0;
+        pagina < totalPaginas;
+        pagina++
+    ){
 
-    card.style.padding =
-    "30px";
+        const card =
+        document.createElement(
+            "div"
+        );
 
-    card.style.background =
-    "#ffffff";
+        card.style.width =
+        "1200px";
 
-    card.style.color =
-    "#000000";
+        card.style.padding =
+        "30px";
 
-    card.style.fontFamily =
-    "Segoe UI";
+        card.style.background =
+        "#fff";
 
-    card.innerHTML = `
+        card.style.color =
+        "#000";
 
-        <h1>
-        🚨 Pendência PTL
-        </h1>
+        card.style.fontFamily =
+        "Segoe UI";
 
-        <pre style="
-            font-size:18px;
-            white-space:pre-wrap;
-        ">
-${document.getElementById(
-"textoWhatsapp"
-).value}
-        </pre>
+        card.innerHTML = `
+            <h1>🚨 Pendência PTL</h1>
+            <h3>Página ${pagina+1}/${totalPaginas}</h3>
 
-    `;
+            <pre style="
+                font-size:22px;
+                line-height:1.5;
+                white-space:pre-wrap;
+            ">
+${paginas[pagina].join("\n\n")}
+            </pre>
+        `;
 
-    document.body.appendChild(
-        card
-    );
+        document.body.appendChild(
+            card
+        );
 
-    html2canvas(card)
-    .then(canvas=>{
+        const canvas =
+        await html2canvas(
+            card,
+            {
+                scale:2
+            }
+        );
 
         const link =
         document.createElement(
@@ -1099,7 +1165,12 @@ ${document.getElementById(
         );
 
         link.download =
-        "pendencia-ptl.png";
+        `pendencia-ptl-${String(
+            pagina+1
+        ).padStart(
+            2,
+            "0"
+        )}.png`;
 
         link.href =
         canvas.toDataURL(
@@ -1110,6 +1181,13 @@ ${document.getElementById(
 
         card.remove();
 
-    });
+        await new Promise(
+            r=>setTimeout(
+                r,
+                300
+            )
+        );
+
+    }
 
 }
