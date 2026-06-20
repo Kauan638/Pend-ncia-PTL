@@ -193,55 +193,51 @@ function tratarDados(
 
     console.log("COLUNAS:");
 console.log(Object.keys(dados[0]));
-    dadosOriginais =
-    dados.map(
-        linha=>{
+   dadosOriginais =
+dados.map(
+    linha=>{
 
-            const loja =
-            String(
-                linha["tipEspecie"] || linha["Espécie"] || ""
-            )
-            .replace(
-                /^S/i,
-                ""
-            );
+        const loja =
+        String(
+            linha["tipEspecie"] ||
+            linha["Espécie"] ||
+            ""
+        )
+        .replace(
+            /^S/i,
+            ""
+        );
 
-            return{
+        return{
 
-                loja,
+            loja,
 
-               ptl:
-linha["(Palete)Posição"] ||
-linha["Posição"] ||
-"",
+            ptl:
+            linha["(Palete)Posição"] ||
+            linha["Posição"] ||
+            "",
 
-                sku:
-                linha[
-                    "Código do produto"
-                ] || "",
+            sku:
+            linha["Código do produto"] ||
+            "",
 
-                descricao:
-                linha[
-                    "Produto"
-                ] || "",
+            descricao:
+            linha["Produto"] ||
+            "",
 
-                volumes:
-                Number(
-                    linha[
-                        "quantidadeTotal"
-                    ]
-                ) || 0,
+            volumes:
+            Number(
+                linha["quantidadeTotal"]
+            ) || 0,
 
-                master:
-                linha[
-                    "(Palete)Master"
-                ] || ""
+            master:
+            linha["(Palete)Master"] ||
+            ""
 
-            };
+        };
 
-        }
-    );
-
+    }
+);
     dadosFiltrados =
     [...dadosOriginais];
 
