@@ -521,18 +521,48 @@ function renderizar(){
                 <tbody>
             `;
 
-            itens.forEach(item=>{
+const skuAgrupado = {};
 
-                htmlTabela +=
-                `
-                <tr>
-                    <td>${item.sku}</td>
-                    <td>${item.descricao}</td>
-                    <td>${item.volumes}</td>
-                </tr>
-                `;
+itens.forEach(item=>{
 
-            });
+    const chave =
+    item.sku;
+
+    if(!skuAgrupado[chave]){
+
+        skuAgrupado[chave] = {
+
+            sku: item.sku,
+
+            descricao:
+            item.descricao,
+
+            volumes: 0
+
+        };
+
+    }
+
+    skuAgrupado[chave]
+    .volumes += 1;
+
+});
+
+Object.values(
+    skuAgrupado
+).forEach(item=>{
+
+    htmlTabela +=
+    `
+    <tr>
+        <td>${item.sku}</td>
+        <td>${item.descricao}</td>
+        <td>${item.volumes}</td>
+    </tr>
+    `;
+
+});
+            
 
             htmlTabela +=
             `
@@ -541,8 +571,8 @@ function renderizar(){
 
                 <div class="resumo-ptl">
 
-                    Itens:
-                    ${itens.length}
+                   SKUs:
+${Object.keys(skuAgrupado).length}
 
                     |
 
