@@ -578,8 +578,10 @@ function gerarTextoWhatsapp(){
 
     let totalLojas = 0;
     let totalPTLs = 0;
-    let totalSKUs = 0;
     let totalVolumes = 0;
+
+    const skusUnicos =
+    new Set();
 
     const lojas =
     Object.keys(agrupado)
@@ -613,7 +615,13 @@ function gerarTextoWhatsapp(){
 
             itens.forEach(item=>{
 
-                totalSKUs++;
+                if(item.sku){
+
+                    skusUnicos.add(
+                        String(item.sku).trim()
+                    );
+
+                }
 
                 volumesPTL +=
                 Number(
@@ -646,7 +654,7 @@ Volumes: ${volumesPTL}
 
 Lojas: ${totalLojas}
 PTLs: ${totalPTLs}
-SKUs: ${totalSKUs}
+SKUs: ${skusUnicos.size}
 Volumes: ${totalVolumes.toLocaleString("pt-BR")}
 `;
 
@@ -655,7 +663,6 @@ Volumes: ${totalVolumes.toLocaleString("pt-BR")}
     ).value = texto;
 
 }
-
 // ========================================
 // COPIAR WHATSAPP
 // ========================================
