@@ -977,3 +977,23 @@ ${document.getElementById(
     });
 
 }
+
+
+function copiarWhatsappCompleto(){
+
+    gerarTextoWhatsapp();
+
+    const texto =
+    document.getElementById(
+        "textoWhatsapp"
+    ).value;
+
+    navigator.clipboard.writeText(
+        texto
+    );
+
+    alert(
+        "Relatório completo copiado!"
+    );
+
+}
