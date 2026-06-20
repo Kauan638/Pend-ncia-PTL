@@ -199,9 +199,7 @@ console.log(Object.keys(dados[0]));
 
             const loja =
             String(
-                linha[
-                    "tipEspecie"
-                ] || ""
+                linha["tipEspecie"] || linha["Espécie"] ""
             )
             .replace(
                 /^S/i,
@@ -214,8 +212,7 @@ console.log(Object.keys(dados[0]));
 
                 ptl:
                 linha[
-                    "(Palete)Posição"
-                ] || "",
+                   linha["(Palete)Posição"] || linha["Posição"] "",
 
                 sku:
                 linha[
