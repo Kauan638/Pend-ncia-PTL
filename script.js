@@ -814,18 +814,128 @@ function copiarWhatsappCompleto(){
     copiarWhatsapp();
 }
 
-function copiarWhatsappCompleto(){
-    copiarWhatsapp();
-}
-
 function copiarWhatsappResumo(){
 
-    // copiarWhatsappResumo()
+    const textoOriginal =
+    document.getElementById(
+        "textoWhatsapp"
+    ).value;
+
+    const linhas =
+    textoOriginal.split("\n");
+
+    const resumo = [];
+
+    resumo.push(
+        "🚨 PENDÊNCIAS PTL\n"
+    );
+
+    const resumoGeral =
+    linhas.find(
+        l=>l.includes("Lojas:")
+    );
+
+    const ptls =
+    linhas.find(
+        l=>l.includes("PTLs:")
+    );
+
+    const skus =
+    linhas.find(
+        l=>l.includes("SKUs:")
+    );
+
+    const volumes =
+    linhas.find(
+        l=>l.includes("Volumes:")
+    );
+
+    resumo.push(
+        "📊 RESUMO GERAL\n"
+    );
+
+    if(resumoGeral)
+    resumo.push(resumoGeral);
+
+    if(ptls)
+    resumo.push(ptls);
+
+    if(skus)
+    resumo.push(skus);
+
+    if(volumes)
+    resumo.push(volumes);
+
+    navigator.clipboard.writeText(
+        resumo.join("\n")
+    );
+
+    alert(
+        "Resumo copiado!"
+    );
 
 }
 
 function baixarImagemResumo(){
 
-    // baixarImagemResumo()
+    const card =
+    document.createElement(
+        "div"
+    );
+
+    card.style.width =
+    "900px";
+
+    card.style.padding =
+    "30px";
+
+    card.style.background =
+    "#ffffff";
+
+    card.style.color =
+    "#000";
+
+    card.style.fontFamily =
+    "Segoe UI";
+
+    card.innerHTML = `
+
+    <h1>
+    🚨 Pendência PTL
+    </h1>
+
+    <pre style="font-size:20px">
+${document.getElementById(
+"textoWhatsapp"
+).value}
+    </pre>
+
+    `;
+
+    document.body.appendChild(
+        card
+    );
+
+    html2canvas(card)
+    .then(canvas=>{
+
+        const link =
+        document.createElement(
+            "a"
+        );
+
+        link.download =
+        "pendencia-ptl.png";
+
+        link.href =
+        canvas.toDataURL(
+            "image/png"
+        );
+
+        link.click();
+
+        card.remove();
+
+    });
 
 }
