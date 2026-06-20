@@ -292,7 +292,9 @@ function gerarAgrupamento(){
 function atualizarKPIs(){
 
     const lojas =
-    Object.keys(agrupado).length;
+    Object.keys(
+        agrupado
+    ).length;
 
     let ptls = 0;
 
@@ -301,29 +303,30 @@ function atualizarKPIs(){
     const skusUnicos =
     new Set();
 
-    Object.values(agrupado)
-    .forEach(loja=>{
+    Object.values(
+        agrupado
+    ).forEach(loja=>{
 
         ptls +=
-        Object.keys(loja).length;
+        Object.keys(
+            loja
+        ).length;
 
-        Object.values(loja)
-        .forEach(ptl=>{
+        Object.values(
+            loja
+        ).forEach(ptl=>{
 
             ptl.forEach(item=>{
 
                 if(item.sku){
 
                     skusUnicos.add(
-                        item.sku
+                        String(item.sku).trim()
                     );
 
                 }
 
-                volumes +=
-                Number(
-                    item.volumes
-                ) || 0;
+                volumes++;
 
             });
 
@@ -352,7 +355,6 @@ function atualizarKPIs(){
     );
 
 }
-
 // ========================================
 // FILTROS
 // ========================================
