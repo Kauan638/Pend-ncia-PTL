@@ -279,73 +279,70 @@ async function carregarApanhas(){
 // TRATAMENTO INICIAL
 // ========================================
 
-function tratarDados(
-    dados
-){
+function tratarDados(dados){
 
     console.log("COLUNAS:");
-console.log(Object.keys(dados[0]));
-   dadosOriginais =
-dados.map(
-    linha=>{
+    console.log(Object.keys(dados[0]));
 
-       const loja =
-String(
-    linha["tipEspecie"] ||
-    linha["Espécie"] ||
-    ""
-)
-.replace(
-    /^S/i,
-    ""
-);
+    dadosOriginais =
+    dados.map(linha=>{
 
-console.log(
-    "SKU Principal:",
-    linha["Código do produto"],
-    "Apanha:",
-    mapaApanhas[
+        const loja =
+        String(
+            linha["tipEspecie"] ||
+            linha["Espécie"] ||
+            ""
+        )
+        .replace(
+            /^S/i,
+            ""
+        );
+
+        const skuPrincipal =
         String(
             linha["Código do produto"]
-        ).trim()
-    ]
-);
+        ).trim();
 
-return{
-    loja,
+        console.log(
+            "SKU:",
+            skuPrincipal,
+            "Apanha encontrada:",
+            mapaApanhas[skuPrincipal]
+        );
 
-    ptl:
-    linha["(Palete)Posição"] ||
-    linha["Posição"] ||
-    "",
+        return{
 
-    sku:
-    linha["Código do produto"] ||
-    "",
+            loja,
 
-    descricao:
-    linha["Produto"] ||
-    "",
+            ptl:
+            linha["(Palete)Posição"] ||
+            linha["Posição"] ||
+            "",
 
-    volumes:
-    Number(
-        linha["quantidadeTotal"]
-    ) || 0,
+            sku:
+            skuPrincipal,
 
-    master:
-    linha["(Palete)Master"] ||
-    "",
+            descricao:
+            linha["Produto"] ||
+            "",
 
-    apanha:
-    mapaApanhas[
-        String(
-            linha["Código do produto"]
-        ).trim()
-    ] || "Sem Apanha"
+            volumes:
+            Number(
+                linha["quantidadeTotal"]
+            ) || 0,
 
-};
-    }
-);
+            master:
+            linha["(Palete)Master"] ||
+            "",
+
+            apanha:
+            mapaApanhas[skuPrincipal] ||
+            "Sem Apanha"
+
+        };
+
+    });
+
     dadosFiltrados =
     [...dadosOriginais];
 
