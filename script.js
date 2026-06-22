@@ -198,8 +198,6 @@ function lerExcel(
 // LEITURA APANHAS
 // ========================================
 
-let mapaApanhas = {};
-
 async function carregarApanhas(){
 
     const arquivo =
