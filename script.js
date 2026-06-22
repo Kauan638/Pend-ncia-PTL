@@ -1227,12 +1227,13 @@ function imprimirPorVolume(){
                 if(!skuAgrupado[item.sku]){
 
                     skuAgrupado[item.sku] = {
-                        loja: item.loja,
-                        ptl: item.ptl,
-                        sku: item.sku,
-                        descricao: item.descricao,
-                        volumes: 0
-                    };
+    loja: item.loja,
+    ptl: item.ptl,
+    sku: item.sku,
+    descricao: item.descricao,
+    apanha: item.apanha,
+    volumes: 0
+};
 
                 }
 
