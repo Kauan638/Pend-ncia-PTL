@@ -475,6 +475,8 @@ function tratarDados(dados){
     dadosFiltrados =
     [...dadosOriginais];
 
+console.log(dadosOriginais[0]);
+    
     gerarAgrupamento();
 
 }
@@ -597,33 +599,25 @@ function aplicarFiltros(){
 
     const lojaFiltro =
     document
-    .getElementById(
-        "filtroLoja"
-    )
+    .getElementById("filtroLoja")
     .value
     .toLowerCase();
 
     const ptlFiltro =
     document
-    .getElementById(
-        "filtroPTL"
-    )
+    .getElementById("filtroPTL")
     .value
     .toLowerCase();
 
     const skuFiltro =
     document
-    .getElementById(
-        "filtroSKU"
-    )
+    .getElementById("filtroSKU")
     .value
     .toLowerCase();
 
     const filtroData =
     document
-    .getElementById(
-        "filtroData"
-    )
+    .getElementById("filtroData")
     .value;
 
     dadosFiltrados =
@@ -666,7 +660,7 @@ function aplicarFiltros(){
             &&
 
             (
-                !filtroData ||
+                filtroData === "" ||
                 dataItem === filtroData
             )
 
@@ -674,32 +668,10 @@ function aplicarFiltros(){
 
     });
 
-    agrupado = {};
-
-    dadosFiltrados.forEach(item=>{
-
-        if(!agrupado[item.loja]){
-
-            agrupado[item.loja] = {};
-
-        }
-
-        if(!agrupado[item.loja][item.ptl]){
-
-            agrupado[item.loja][item.ptl] = [];
-
-        }
-
-        agrupado[item.loja][item.ptl]
-        .push(item);
-
-    });
-
-    atualizarKPIs();
-
-    renderizar();
+    gerarAgrupamento();
 
 }
+
 // ========================================
 // RENDERIZAÇÃO
 // ========================================
@@ -829,7 +801,9 @@ skuAgrupado[chave] = {
                 <tr>
                     <td>${item.sku}</td>
 <td>${item.descricao}</td>
-<td>${item.data || "-"}</td>
+<td style="color:red">
+${item.data || "-"}
+</td>
 <td>${item.apanha}</td>
 <td>${item.pulmao}</td>
 <td>${item.volumes}</td>
