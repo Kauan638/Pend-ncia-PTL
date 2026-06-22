@@ -259,6 +259,8 @@ async function carregarApanhas(){
                 ).length
             );
 
+            console.log(mapaApanhas);
+            
             resolve();
 
         };
