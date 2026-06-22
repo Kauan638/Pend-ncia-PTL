@@ -740,7 +740,7 @@ function renderizar(){
 
                 <table class="tabela">
 
-        <thead>
+       <thead>
     <tr>
         <th>SKU</th>
         <th>Descrição</th>
