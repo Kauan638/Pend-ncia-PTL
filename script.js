@@ -274,6 +274,107 @@ async function carregarApanhas(){
 
 }
 
+// ========================================
+// LEITURA PULMÕES
+// ========================================
+
+async function carregarPulmoes(){
+
+    const arquivo =
+    document.getElementById(
+        "arquivoPulmao"
+    ).files[0];
+
+    if(!arquivo) return;
+
+    const reader =
+    new FileReader();
+
+    return new Promise(resolve=>{
+
+        reader.onload =
+        function(e){
+
+            const texto =
+            e.target.result;
+
+            const linhas =
+            texto
+            .split(/\r?\n/)
+            .filter(
+                l => l.trim()
+            );
+
+            mapaPulmoes = {};
+
+            for(
+                let i = 1;
+                i < linhas.length;
+                i++
+            ){
+
+                const colunas =
+                linhas[i].split(";");
+
+                const rua =
+                colunas[1]?.trim();
+
+                const predio =
+                colunas[2]?.trim();
+
+                const apartamento =
+                colunas[3]?.trim();
+
+                const sala =
+                colunas[4]?.trim();
+
+                const sku =
+                colunas[5]?.trim();
+
+                if(!sku) continue;
+
+                const endereco =
+                `${rua}.${predio}.${apartamento}.${sala}`;
+
+                if(!mapaPulmoes[sku]){
+
+                    mapaPulmoes[sku] = [];
+
+                }
+
+                if(
+                    !mapaPulmoes[sku]
+                    .includes(endereco)
+                ){
+
+                    mapaPulmoes[sku]
+                    .push(endereco);
+
+                }
+
+            }
+
+            console.log(
+                "Pulmões carregados:",
+                Object.keys(
+                    mapaPulmoes
+                ).length
+            );
+
+            resolve();
+
+        };
+
+        reader.readAsText(
+            arquivo,
+            "latin1"
+        );
+
+    });
+
+}
+
+
 
 // ========================================
 // TRATAMENTO INICIAL
