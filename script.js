@@ -1320,21 +1320,14 @@ function imprimirPorVolume(){
                 if(!skuAgrupado[item.sku]){
 
                     skuAgrupado[item.sku] = {
-    loja: item.loja,
-    ptl: item.ptl,
-    sku: item.sku,
-    descricao: item.descricao,
-    apanha: item.apanha || "Sem Apanha",
-    volumes: 0
-};
+                        loja: item.loja,
+                        ptl: item.ptl,
+                        sku: item.sku,
+                        descricao: item.descricao,
+                        apanha: item.apanha || "Sem Apanha",
+                        volumes: 0
+                    };
 
-   console.log(
-    "SKU:",
-    item.sku,
-    "Apanha:",
-    item.apanha
-);                 
-                    
                 }
 
                 skuAgrupado[item.sku].volumes++;
@@ -1352,33 +1345,44 @@ function imprimirPorVolume(){
             dados.filter(x => x.volumes > 50),
 
         "🟠 De 20 a 49 Volumes":
-            dados.filter(x => x.volumes >=20 && x.volumes <=49),
+            dados.filter(x => x.volumes >= 20 && x.volumes <= 49),
 
         "🟡 De 10 a 19 Volumes":
-            dados.filter(x => x.volumes >=10 && x.volumes <=19),
+            dados.filter(x => x.volumes >= 10 && x.volumes <= 19),
 
         "🟢 Até 9 Volumes":
-            dados.filter(x => x.volumes <=9)
+            dados.filter(x => x.volumes <= 9)
     };
 
     let html = `
     <html>
     <head>
         <style>
-            body{font-family:Arial;padding:20px;}
-            h2{background:#eee;padding:10px;}
+            body{
+                font-family:Arial;
+                padding:20px;
+            }
+
+            h2{
+                background:#eee;
+                padding:10px;
+            }
+
             table{
                 width:100%;
                 border-collapse:collapse;
                 margin-bottom:30px;
             }
+
             th,td{
                 border:1px solid #ccc;
                 padding:8px;
             }
         </style>
     </head>
+
     <body>
+
     <h1>📦 Pendências por Volume</h1>
     `;
 
@@ -1390,35 +1394,41 @@ function imprimirPorVolume(){
         html += `<h2>${titulo}</h2>`;
 
         html += `
-<table>
-<tr>
-    <th>Loja</th>
-    <th>PTL</th>
-    <th>SKU</th>
-    <th>Descrição</th>
-    <th>Apanha</th>
-    <th>Volumes</th>
-</tr>
-`;
+        <table>
+            <tr>
+                <th>Loja</th>
+                <th>PTL</th>
+                <th>SKU</th>
+                <th>Descrição</th>
+                <th>Apanha</th>
+                <th>Volumes</th>
+            </tr>
+        `;
 
-grupos[titulo]
-.sort((a,b)=>b.volumes-a.volumes)
-.forEach(item=>{
-           html += `
-<tr>
-    <td>${item.loja}</td>
-    <td>${item.ptl}</td>
-    <td>${item.sku}</td>
-    <td>${item.descricao}</td>
-    <td>${item.apanha || "Sem Apanha"}</td>
-    <td>${item.volumes}</td>
-</tr>`;
+        grupos[titulo]
+        .sort((a,b)=>b.volumes-a.volumes)
+        .forEach(item=>{
+
+            html += `
+            <tr>
+                <td>${item.loja}</td>
+                <td>${item.ptl}</td>
+                <td>${item.sku}</td>
+                <td>${item.descricao}</td>
+                <td>${item.apanha || "Sem Apanha"}</td>
+                <td>${item.volumes}</td>
+            </tr>
+            `;
+
         });
 
         html += `</table>`;
     }
 
-    html += `</body></html>`;
+    html += `
+    </body>
+    </html>
+    `;
 
     const janela = window.open("", "_blank");
 
