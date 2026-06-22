@@ -1328,6 +1328,13 @@ function imprimirPorVolume(){
     volumes: 0
 };
 
+   console.log(
+    "SKU:",
+    item.sku,
+    "Apanha:",
+    item.apanha
+);                 
+                    
                 }
 
                 skuAgrupado[item.sku].volumes++;
