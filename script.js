@@ -575,7 +575,8 @@ Object.values(
     <tr>
         <td>${item.sku}</td>
         <td>${item.descricao}</td>
-        <td>${item.volumes}</td>
+<td>${item.apanha}</td>
+<td>${item.volumes}</td>
     </tr>
     `;
 
