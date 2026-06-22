@@ -6,6 +6,7 @@ let dadosOriginais = [];
 let dadosFiltrados = [];
 let agrupado = {};
 let mapaApanhas = {};
+let mapaPulmoes = {};
 
 // ========================================
 // PROCESSAR ARQUIVO
@@ -39,7 +40,16 @@ async function processarArquivo(){
             await carregarApanhas();
 
         }
+if(
+    document.getElementById(
+        "arquivoPulmao"
+    )?.files[0]
+){
 
+    await carregarPulmoes();
+
+}
+        
         const nome =
         arquivo.name.toLowerCase();
 
