@@ -403,32 +403,37 @@ function tratarDados(dados){
             linha["Espécie"] ||
             ""
         )
-        .replace(
-            /^S/i,
-            ""
-        );
+        .replace(/^S/i,"");
 
         const skuPrincipal =
         String(
             linha["Código do produto"]
         ).trim();
 
-        console.log(
-            "SKU:",
-            skuPrincipal,
-            "Apanha encontrada:",
-            mapaApanhas[skuPrincipal]
-        );
+        // ======================
+        // TRATAMENTO DATA
+        // ======================
+
+        let data = "";
+
+        if(
+            linha["(Global)H. Integrado"]
+        ){
+
+            data =
+            String(
+                linha["(Global)H. Integrado"]
+            )
+            .split(",")[0]
+            .trim();
+
+        }
 
         return{
 
             loja,
 
-            // ALTERE "Data" PELO NOME REAL DA COLUNA,
-            // SE FOR DIFERENTE NO SEU ARQUIVO
-            data:
-            linha["Data"] ||
-            "",
+            data,
 
             ptl:
             linha["(Palete)Posição"] ||
@@ -452,8 +457,9 @@ function tratarDados(dados){
             "",
 
             apanha:
-            mapaApanhas[skuPrincipal] ||
-            "Sem Apanha",
+            mapaApanhas[
+                skuPrincipal
+            ] || "Sem Apanha",
 
             pulmao:
             (
@@ -472,7 +478,6 @@ function tratarDados(dados){
     gerarAgrupamento();
 
 }
-
 // ========================================
 // AGRUPAMENTO
 // ========================================
