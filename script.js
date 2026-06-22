@@ -627,16 +627,19 @@ itens.forEach(item=>{
 
     if(!skuAgrupado[chave]){
 
-        skuAgrupado[chave] = {
+       skuAgrupado[chave] = {
 
-            sku: item.sku,
+    sku: item.sku,
 
-            descricao:
-            item.descricao,
+    descricao:
+    item.descricao,
 
-            volumes: 0
+    apanha:
+    item.apanha || "Sem Apanha",
 
-        };
+    volumes: 0
+
+};
 
     }
 
