@@ -385,7 +385,6 @@ async function carregarPulmoes(){
 }
 
 
-
 // ========================================
 // TRATAMENTO INICIAL
 // ========================================
@@ -425,6 +424,12 @@ function tratarDados(dados){
 
             loja,
 
+            // ALTERE "Data" PELO NOME REAL DA COLUNA,
+            // SE FOR DIFERENTE NO SEU ARQUIVO
+            data:
+            linha["Data"] ||
+            "",
+
             ptl:
             linha["(Palete)Posição"] ||
             linha["Posição"] ||
@@ -446,16 +451,16 @@ function tratarDados(dados){
             linha["(Palete)Master"] ||
             "",
 
-           apanha:
-mapaApanhas[skuPrincipal] ||
-"Sem Apanha",
+            apanha:
+            mapaApanhas[skuPrincipal] ||
+            "Sem Apanha",
 
-pulmao:
-(
-    mapaPulmoes[
-        skuPrincipal
-    ] || []
-).join(" | ")
+            pulmao:
+            (
+                mapaPulmoes[
+                    skuPrincipal
+                ] || []
+            ).join(" | ")
 
         };
 
@@ -608,26 +613,40 @@ function aplicarFiltros(){
     .value
     .toLowerCase();
 
-    dadosFiltrados =
-    dadosOriginais.filter(
-        item=>{
+const filtroData =
+document.getElementById("filtroData")
+.value;
+    
+   dadosFiltrados =
+dadosOriginais.filter(item=>{
 
-            return (
-                item.loja
-                    .toLowerCase()
-                    .includes(lojaFiltro)
-                &&
-                item.ptl
-                    .toLowerCase()
-                    .includes(ptlFiltro)
-                &&
-                String(item.sku)
-                    .toLowerCase()
-                    .includes(skuFiltro)
-            );
+    return (
+        item.loja
+            .toLowerCase()
+            .includes(lojaFiltro)
 
-        }
+        &&
+
+        item.ptl
+            .toLowerCase()
+            .includes(ptlFiltro)
+
+        &&
+
+        String(item.sku)
+            .toLowerCase()
+            .includes(skuFiltro)
+
+        &&
+
+        (
+            !filtroData ||
+            item.data === filtroData
+        )
+
     );
+
+});
 
     agrupado = {};
 
