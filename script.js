@@ -794,20 +794,17 @@ skuAgrupado[chave] = {
             Object.values(
                 skuAgrupado
             ).forEach(item=>{
-
-                htmlTabela +=
-                `
-                <tr>
-                    <td>${item.sku}</td>
-<td>${item.descricao}</td>
-<td style="color:red">
-${item.data || "-"}
-</td>
-<td>${item.apanha}</td>
-<td>${item.pulmao}</td>
-<td>${item.volumes}</td>
-                </tr>
-                `;
+htmlTabela +=
+`
+<tr>
+    <td>${item.sku}</td>
+    <td>${item.descricao}</td>
+    <td>${item.data || "-"}</td>
+    <td>${item.apanha}</td>
+    <td>${item.pulmao}</td>
+    <td>${item.volumes}</td>
+</tr>
+`;
 
             });
 
