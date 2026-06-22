@@ -5,6 +5,7 @@
 let dadosOriginais = [];
 let dadosFiltrados = [];
 let agrupado = {};
+let mapaApanhas = {};
 
 // ========================================
 // PROCESSAR ARQUIVO
