@@ -195,6 +195,87 @@ function lerExcel(
 }
 
 // ========================================
+// LEITURA APANHAS
+// ========================================
+
+let mapaApanhas = {};
+
+async function carregarApanhas(){
+
+    const arquivo =
+    document.getElementById(
+        "arquivoApanha"
+    ).files[0];
+
+    if(!arquivo) return;
+
+    const reader =
+    new FileReader();
+
+    return new Promise(resolve=>{
+
+        reader.onload =
+        function(e){
+
+            const texto =
+            e.target.result;
+
+            const linhas =
+            texto
+            .split(/\r?\n/)
+            .filter(
+                l => l.trim()
+            );
+
+            mapaApanhas = {};
+
+            for(
+                let i = 1;
+                i < linhas.length;
+                i++
+            ){
+
+                const colunas =
+                linhas[i]
+                .split(";");
+
+                const endereco =
+                colunas[0]?.trim();
+
+                const sku =
+                colunas[1]?.trim();
+
+                if(sku){
+
+                    mapaApanhas[sku] =
+                    endereco;
+
+                }
+
+            }
+
+            console.log(
+                "Apanhas carregadas:",
+                Object.keys(
+                    mapaApanhas
+                ).length
+            );
+
+            resolve();
+
+        };
+
+        reader.readAsText(
+            arquivo,
+            "latin1"
+        );
+
+    });
+
+}
+
+
+// ========================================
 // TRATAMENTO INICIAL
 // ========================================
 
