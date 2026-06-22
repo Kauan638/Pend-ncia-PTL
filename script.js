@@ -724,15 +724,15 @@ function renderizar(){
 
                 <table class="tabela">
 
-                <thead>
-                    <tr>
-                        <th>SKU</th>
-                        <th>Descrição</th>
-                        <th>Apanha</th>
-                        <th>Pulmão</th>
-                        <th>Volumes</th>
-                    </tr>
-                </thead>
+               <thead>
+    <tr>
+        <th>SKU</th>
+        <th>Descrição</th>
+        <th>Apanha</th>
+        <th>Pulmão</th>
+        <th>Volumes</th>
+    </tr>
+</thead>
 
                 <tbody>
             `;
@@ -746,22 +746,22 @@ function renderizar(){
 
                 if(!skuAgrupado[chave]){
 
-                    skuAgrupado[chave] = {
+                   skuAgrupado[chave] = {
 
-                        sku: item.sku,
+    sku: item.sku,
 
-                        descricao:
-                        item.descricao,
+    descricao:
+    item.descricao,
 
-                        apanha:
-                        item.apanha || "Sem Apanha",
+    apanha:
+    item.apanha || "Sem Apanha",
 
-                        pulmao:
-                        item.pulmao || "-",
+    pulmao:
+    item.pulmao || "-",
 
-                        volumes: 0
+    volumes: 0
 
-                    };
+};
 
                 }
 
