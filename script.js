@@ -1390,29 +1390,29 @@ function imprimirPorVolume(){
         html += `<h2>${titulo}</h2>`;
 
         html += `
-        <table>
-      <tr>
+<table>
+<tr>
     <th>Loja</th>
     <th>PTL</th>
     <th>SKU</th>
     <th>Descrição</th>
     <th>Apanha</th>
     <th>Volumes</th>
-</tr>;
+</tr>
+`;
 
-        grupos[titulo]
-        .sort((a,b)=>b.volumes-a.volumes)
-        .forEach(item=>{
-
-            html += `
-           <tr>
+grupos[titulo]
+.sort((a,b)=>b.volumes-a.volumes)
+.forEach(item=>{
+           html += `
+<tr>
     <td>${item.loja}</td>
     <td>${item.ptl}</td>
     <td>${item.sku}</td>
     <td>${item.descricao}</td>
     <td>${item.apanha || "Sem Apanha"}</td>
     <td>${item.volumes}</td>
-</tr>;
+</tr>`;
         });
 
         html += `</table>`;
