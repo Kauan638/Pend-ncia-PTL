@@ -785,6 +785,7 @@ Object.values(
         <td>${item.sku}</td>
         <td>${item.descricao}</td>
 <td>${item.apanha}</td>
+<td>${item.pulmao || "-"}</td>
 <td>${item.volumes}</td>
     </tr>
     `;
