@@ -531,7 +531,8 @@ function renderizar(){
                     <tr>
                         <th>SKU</th>
                         <th>Descrição</th>
-                        <th>Volumes</th>
+<th>Apanha</th>
+<th>Volumes</th>
                     </tr>
                 </thead>
 
