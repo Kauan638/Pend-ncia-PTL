@@ -588,6 +588,7 @@ function atualizarKPIs(){
     );
 
 }
+
 // ========================================
 // FILTROS
 // ========================================
@@ -618,40 +619,60 @@ function aplicarFiltros(){
     .value
     .toLowerCase();
 
-const filtroData =
-document.getElementById("filtroData")
-.value;
-    
-   dadosFiltrados =
-dadosOriginais.filter(item=>{
+    const filtroData =
+    document
+    .getElementById(
+        "filtroData"
+    )
+    .value;
 
-    return (
-        item.loja
+    dadosFiltrados =
+    dadosOriginais.filter(item=>{
+
+        let dataItem = "";
+
+        if(item.data){
+
+            const partes =
+            item.data.split("/");
+
+            if(partes.length === 3){
+
+                dataItem =
+                `${partes[2]}-${partes[1]}-${partes[0]}`;
+
+            }
+
+        }
+
+        return (
+
+            item.loja
             .toLowerCase()
             .includes(lojaFiltro)
 
-        &&
+            &&
 
-        item.ptl
+            item.ptl
             .toLowerCase()
             .includes(ptlFiltro)
 
-        &&
+            &&
 
-        String(item.sku)
+            String(item.sku)
             .toLowerCase()
             .includes(skuFiltro)
 
-        &&
+            &&
 
-        (
-            !filtroData ||
-            item.data === filtroData
-        )
+            (
+                !filtroData ||
+                dataItem === filtroData
+            )
 
-    );
+        );
 
-});
+    });
 
     agrupado = {};
 
@@ -670,7 +691,7 @@ dadosOriginais.filter(item=>{
         }
 
         agrupado[item.loja][item.ptl]
-            .push(item);
+        .push(item);
 
     });
 
@@ -679,7 +700,6 @@ dadosOriginais.filter(item=>{
     renderizar();
 
 }
-
 // ========================================
 // RENDERIZAÇÃO
 // ========================================
@@ -751,10 +771,12 @@ function renderizar(){
                <thead>
     <tr>
         <th>SKU</th>
-        <th>Descrição</th>
-        <th>Apanha</th>
-        <th>Pulmão</th>
-        <th>Volumes</th>
+<th>SKU</th>
+<th>Descrição</th>
+<th>Data</th>
+<th>Apanha</th>
+<th>Pulmão</th>
+<th>Volumes</th>
     </tr>
 </thead>
 
@@ -770,12 +792,16 @@ function renderizar(){
 
                 if(!skuAgrupado[chave]){
 
-                   skuAgrupado[chave] = {
+                  
+skuAgrupado[chave] = {
 
     sku: item.sku,
 
     descricao:
     item.descricao,
+
+    data:
+    item.data,
 
     apanha:
     item.apanha || "Sem Apanha",
@@ -802,10 +828,11 @@ function renderizar(){
                 `
                 <tr>
                     <td>${item.sku}</td>
-                    <td>${item.descricao}</td>
-                    <td>${item.apanha}</td>
-                    <td>${item.pulmao}</td>
-                    <td>${item.volumes}</td>
+<td>${item.descricao}</td>
+<td>${item.data || "-"}</td>
+<td>${item.apanha}</td>
+<td>${item.pulmao}</td>
+<td>${item.volumes}</td>
                 </tr>
                 `;
 
