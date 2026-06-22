@@ -21,13 +21,24 @@ async function processarArquivo(){
     if(!arquivo){
 
         alert(
-            "Selecione um arquivo."
+            "Selecione o arquivo principal."
         );
 
         return;
     }
 
     try{
+
+        // Carrega as apanhas se houver arquivo
+        if(
+            document.getElementById(
+                "arquivoApanha"
+            )?.files[0]
+        ){
+
+            await carregarApanhas();
+
+        }
 
         const nome =
         arquivo.name.toLowerCase();
@@ -61,7 +72,6 @@ async function processarArquivo(){
     }
 
 }
-
 // ========================================
 // LEITURA CSV
 // ========================================
