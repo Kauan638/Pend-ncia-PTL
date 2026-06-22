@@ -289,19 +289,29 @@ console.log(Object.keys(dados[0]));
 dados.map(
     linha=>{
 
-        const loja =
+       const loja =
+String(
+    linha["tipEspecie"] ||
+    linha["Espécie"] ||
+    ""
+)
+.replace(
+    /^S/i,
+    ""
+);
+
+console.log(
+    "SKU Principal:",
+    linha["Código do produto"],
+    "Apanha:",
+    mapaApanhas[
         String(
-            linha["tipEspecie"] ||
-            linha["Espécie"] ||
-            ""
-        )
-        .replace(
-            /^S/i,
-            ""
-        );
+            linha["Código do produto"]
+        ).trim()
+    ]
+);
 
-      return{
-
+return{
     loja,
 
     ptl:
