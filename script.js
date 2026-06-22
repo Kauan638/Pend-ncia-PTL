@@ -968,27 +968,33 @@ function exportarExcel(){
             ][ptl]
             .forEach(item=>{
 
-                exportacao.push({
+              exportacao.push({
 
-                    Loja:
-                    item.loja,
+    Loja:
+    item.loja,
 
-                    PTL:
-                    item.ptl,
+    PTL:
+    item.ptl,
 
-                    SKU:
-                    item.sku,
+    SKU:
+    item.sku,
 
-                    Descricao:
-                    item.descricao,
+    Descricao:
+    item.descricao,
 
-                    Volumes:
-                    item.volumes,
+    Apanha:
+    item.apanha,
 
-                    Master:
-                    item.master
+    Pulmao:
+    item.pulmao || "-",
 
-                });
+    Volumes:
+    item.volumes,
+
+    Master:
+    item.master
+
+});
 
             });
 
