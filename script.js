@@ -219,34 +219,40 @@ dados.map(
             ""
         );
 
-        return{
+      return{
 
-            loja,
+    loja,
 
-            ptl:
-            linha["(Palete)Posição"] ||
-            linha["Posição"] ||
-            "",
+    ptl:
+    linha["(Palete)Posição"] ||
+    linha["Posição"] ||
+    "",
 
-            sku:
-            linha["Código do produto"] ||
-            "",
+    sku:
+    linha["Código do produto"] ||
+    "",
 
-            descricao:
-            linha["Produto"] ||
-            "",
+    descricao:
+    linha["Produto"] ||
+    "",
 
-            volumes:
-            Number(
-                linha["quantidadeTotal"]
-            ) || 0,
+    volumes:
+    Number(
+        linha["quantidadeTotal"]
+    ) || 0,
 
-            master:
-            linha["(Palete)Master"] ||
-            ""
+    master:
+    linha["(Palete)Master"] ||
+    "",
 
-        };
+    apanha:
+    mapaApanhas[
+        String(
+            linha["Código do produto"]
+        ).trim()
+    ] || "Sem Apanha"
 
+};
     }
 );
     dadosFiltrados =
