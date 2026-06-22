@@ -1191,3 +1191,122 @@ ${paginas[pagina].join("\n\n")}
     }
 
 }
+
+
+function imprimirPorVolume(){
+
+    const dados = [];
+
+    Object.keys(agrupado).forEach(loja=>{
+
+        Object.keys(agrupado[loja]).forEach(ptl=>{
+
+            const itens = agrupado[loja][ptl];
+
+            const skuAgrupado = {};
+
+            itens.forEach(item=>{
+
+                if(!skuAgrupado[item.sku]){
+
+                    skuAgrupado[item.sku] = {
+                        loja: item.loja,
+                        ptl: item.ptl,
+                        sku: item.sku,
+                        descricao: item.descricao,
+                        volumes: 0
+                    };
+
+                }
+
+                skuAgrupado[item.sku].volumes++;
+
+            });
+
+            dados.push(...Object.values(skuAgrupado));
+
+        });
+
+    });
+
+    const grupos = {
+        "🔴 Acima de 50 Volumes":
+            dados.filter(x => x.volumes > 50),
+
+        "🟠 De 20 a 49 Volumes":
+            dados.filter(x => x.volumes >=20 && x.volumes <=49),
+
+        "🟡 De 10 a 19 Volumes":
+            dados.filter(x => x.volumes >=10 && x.volumes <=19),
+
+        "🟢 Até 9 Volumes":
+            dados.filter(x => x.volumes <=9)
+    };
+
+    let html = `
+    <html>
+    <head>
+        <style>
+            body{font-family:Arial;padding:20px;}
+            h2{background:#eee;padding:10px;}
+            table{
+                width:100%;
+                border-collapse:collapse;
+                margin-bottom:30px;
+            }
+            th,td{
+                border:1px solid #ccc;
+                padding:8px;
+            }
+        </style>
+    </head>
+    <body>
+    <h1>📦 Pendências por Volume</h1>
+    `;
+
+    for(const titulo in grupos){
+
+        if(grupos[titulo].length === 0)
+            continue;
+
+        html += `<h2>${titulo}</h2>`;
+
+        html += `
+        <table>
+        <tr>
+            <th>Loja</th>
+            <th>PTL</th>
+            <th>SKU</th>
+            <th>Descrição</th>
+            <th>Volumes</th>
+        </tr>`;
+
+        grupos[titulo]
+        .sort((a,b)=>b.volumes-a.volumes)
+        .forEach(item=>{
+
+            html += `
+            <tr>
+                <td>${item.loja}</td>
+                <td>${item.ptl}</td>
+                <td>${item.sku}</td>
+                <td>${item.descricao}</td>
+                <td>${item.volumes}</td>
+            </tr>`;
+        });
+
+        html += `</table>`;
+    }
+
+    html += `</body></html>`;
+
+    const janela = window.open("", "_blank");
+
+    janela.document.write(html);
+    janela.document.close();
+
+    setTimeout(()=>{
+        janela.print();
+    },500);
+
+}
