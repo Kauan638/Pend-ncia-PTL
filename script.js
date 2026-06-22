@@ -674,12 +674,8 @@ function renderizar(){
         agrupado
     )
     .sort(
-        (
-            a,
-            b
-        )=>
-        Number(a) -
-        Number(b)
+        (a,b)=>
+        Number(a)-Number(b)
     );
 
     lojas.forEach(loja=>{
@@ -707,19 +703,14 @@ function renderizar(){
         ptls.forEach(ptl=>{
 
             const itens =
-            agrupado[
-                loja
-            ][ptl];
+            agrupado[loja][ptl];
 
-            let totalVolumes =
-            0;
+            let totalVolumes = 0;
 
             itens.forEach(i=>{
 
                 totalVolumes +=
-                Number(
-                    i.volumes
-                ) || 0;
+                Number(i.volumes) || 0;
 
             });
 
@@ -737,61 +728,64 @@ function renderizar(){
                     <tr>
                         <th>SKU</th>
                         <th>Descrição</th>
-<th>Apanha</th>
-<th>Volumes</th>
+                        <th>Apanha</th>
+                        <th>Pulmão</th>
+                        <th>Volumes</th>
                     </tr>
                 </thead>
 
                 <tbody>
             `;
 
-const skuAgrupado = {};
+            const skuAgrupado = {};
 
-itens.forEach(item=>{
+            itens.forEach(item=>{
 
-    const chave =
-    item.sku;
+                const chave =
+                item.sku;
 
-    if(!skuAgrupado[chave]){
+                if(!skuAgrupado[chave]){
 
-       skuAgrupado[chave] = {
+                    skuAgrupado[chave] = {
 
-    sku: item.sku,
+                        sku: item.sku,
 
-    descricao:
-    item.descricao,
+                        descricao:
+                        item.descricao,
 
-    apanha:
-    item.apanha || "Sem Apanha",
+                        apanha:
+                        item.apanha || "Sem Apanha",
 
-    volumes: 0
+                        pulmao:
+                        item.pulmao || "-",
 
-};
+                        volumes: 0
 
-    }
+                    };
 
-    skuAgrupado[chave]
-    .volumes += 1;
+                }
 
-});
+                skuAgrupado[chave]
+                .volumes++;
 
-Object.values(
-    skuAgrupado
-).forEach(item=>{
+            });
 
-    htmlTabela +=
-    `
-    <tr>
-        <td>${item.sku}</td>
-        <td>${item.descricao}</td>
-<td>${item.apanha}</td>
-<td>${item.pulmao || "-"}</td>
-<td>${item.volumes}</td>
-    </tr>
-    `;
+            Object.values(
+                skuAgrupado
+            ).forEach(item=>{
 
-});
-            
+                htmlTabela +=
+                `
+                <tr>
+                    <td>${item.sku}</td>
+                    <td>${item.descricao}</td>
+                    <td>${item.apanha}</td>
+                    <td>${item.pulmao}</td>
+                    <td>${item.volumes}</td>
+                </tr>
+                `;
+
+            });
 
             htmlTabela +=
             `
@@ -800,8 +794,8 @@ Object.values(
 
                 <div class="resumo-ptl">
 
-                   SKUs:
-${Object.keys(skuAgrupado).length}
+                    SKUs:
+                    ${Object.keys(skuAgrupado).length}
 
                     |
 
@@ -1445,110 +1439,156 @@ function imprimirPorVolume(){
                 if(!skuAgrupado[item.sku]){
 
                     skuAgrupado[item.sku] = {
+
                         loja: item.loja,
                         ptl: item.ptl,
                         sku: item.sku,
                         descricao: item.descricao,
                         apanha: item.apanha || "Sem Apanha",
+                        pulmao: item.pulmao || "-",
                         volumes: 0
+
                     };
 
                 }
 
-                skuAgrupado[item.sku].volumes++;
+                skuAgrupado[item.sku]
+                .volumes++;
 
             });
 
-            dados.push(...Object.values(skuAgrupado));
+            dados.push(
+                ...Object.values(
+                    skuAgrupado
+                )
+            );
 
         });
 
     });
 
     const grupos = {
+
         "🔴 Acima de 50 Volumes":
-            dados.filter(x => x.volumes > 50),
+        dados.filter(
+            x => x.volumes > 50
+        ),
 
         "🟠 De 20 a 49 Volumes":
-            dados.filter(x => x.volumes >= 20 && x.volumes <= 49),
+        dados.filter(
+            x => x.volumes >=20 &&
+                 x.volumes <=49
+        ),
 
         "🟡 De 10 a 19 Volumes":
-            dados.filter(x => x.volumes >= 10 && x.volumes <= 19),
+        dados.filter(
+            x => x.volumes >=10 &&
+                 x.volumes <=19
+        ),
 
         "🟢 Até 9 Volumes":
-            dados.filter(x => x.volumes <= 9)
+        dados.filter(
+            x => x.volumes <=9
+        )
+
     };
 
     let html = `
     <html>
     <head>
-        <style>
-            body{
-                font-family:Arial;
-                padding:20px;
-            }
 
-            h2{
-                background:#eee;
-                padding:10px;
-            }
+    <style>
 
-            table{
-                width:100%;
-                border-collapse:collapse;
-                margin-bottom:30px;
-            }
+    body{
+        font-family:Arial;
+        padding:20px;
+    }
 
-            th,td{
-                border:1px solid #ccc;
-                padding:8px;
-            }
-        </style>
+    h2{
+        background:#eee;
+        padding:10px;
+    }
+
+    table{
+        width:100%;
+        border-collapse:collapse;
+        margin-bottom:30px;
+    }
+
+    th,td{
+        border:1px solid #ccc;
+        padding:8px;
+    }
+
+    </style>
+
     </head>
 
     <body>
 
-    <h1>📦 Pendências por Volume</h1>
+    <h1>
+    📦 Pendências por Volume
+    </h1>
     `;
 
     for(const titulo in grupos){
 
-        if(grupos[titulo].length === 0)
-            continue;
+        if(
+            grupos[titulo]
+            .length === 0
+        ) continue;
 
-        html += `<h2>${titulo}</h2>`;
+        html += `
+        <h2>${titulo}</h2>
+        `;
 
         html += `
         <table>
-            <tr>
-                <th>Loja</th>
-                <th>PTL</th>
-                <th>SKU</th>
-                <th>Descrição</th>
-                <th>Apanha</th>
-                <th>Pulmão</th>
-                <th>Volumes</th>
-            </tr>
+
+        <tr>
+            <th>Loja</th>
+            <th>PTL</th>
+            <th>SKU</th>
+            <th>Descrição</th>
+            <th>Apanha</th>
+            <th>Pulmão</th>
+            <th>Volumes</th>
+        </tr>
         `;
 
         grupos[titulo]
-        .sort((a,b)=>b.volumes-a.volumes)
+        .sort(
+            (a,b)=>
+            b.volumes-a.volumes
+        )
         .forEach(item=>{
 
             html += `
             <tr>
+
                 <td>${item.loja}</td>
+
                 <td>${item.ptl}</td>
+
                 <td>${item.sku}</td>
+
                 <td>${item.descricao}</td>
-                <td>${item.apanha || "Sem Apanha"}</td>
+
+                <td>${item.apanha}</td>
+
+                <td>${item.pulmao}</td>
+
                 <td>${item.volumes}</td>
+
             </tr>
             `;
 
         });
 
-        html += `</table>`;
+        html += `
+        </table>
+        `;
+
     }
 
     html += `
@@ -1556,13 +1596,22 @@ function imprimirPorVolume(){
     </html>
     `;
 
-    const janela = window.open("", "_blank");
+    const janela =
+    window.open(
+        "",
+        "_blank"
+    );
 
-    janela.document.write(html);
+    janela.document.write(
+        html
+    );
+
     janela.document.close();
 
     setTimeout(()=>{
+
         janela.print();
+
     },500);
 
 }
