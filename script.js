@@ -446,9 +446,16 @@ function tratarDados(dados){
             linha["(Palete)Master"] ||
             "",
 
-            apanha:
-            mapaApanhas[skuPrincipal] ||
-            "Sem Apanha"
+           apanha:
+mapaApanhas[skuPrincipal] ||
+"Sem Apanha",
+
+pulmao:
+(
+    mapaPulmoes[
+        skuPrincipal
+    ] || []
+).join(" | ")
 
         };
 
@@ -1512,6 +1519,7 @@ function imprimirPorVolume(){
                 <th>SKU</th>
                 <th>Descrição</th>
                 <th>Apanha</th>
+                <th>Pulmão</th>
                 <th>Volumes</th>
             </tr>
         `;
