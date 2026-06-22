@@ -1324,7 +1324,7 @@ function imprimirPorVolume(){
     ptl: item.ptl,
     sku: item.sku,
     descricao: item.descricao,
-    apanha: item.apanha,
+    apanha: item.apanha || "Sem Apanha",
     volumes: 0
 };
 
