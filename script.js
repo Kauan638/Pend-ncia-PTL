@@ -740,15 +740,14 @@ function renderizar(){
 
                 <table class="tabela">
 
-               <thead>
+        <thead>
     <tr>
         <th>SKU</th>
-<th>SKU</th>
-<th>Descrição</th>
-<th>Data</th>
-<th>Apanha</th>
-<th>Pulmão</th>
-<th>Volumes</th>
+        <th>Descrição</th>
+        <th>Data</th>
+        <th>Apanha</th>
+        <th>Pulmão</th>
+        <th>Volumes</th>
     </tr>
 </thead>
 
