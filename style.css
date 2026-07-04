@@ -96,6 +96,16 @@ TÍTULO + FAIXA DE SINALIZAÇÃO
 }
 
 /* =========================
+CABEÇALHO EXCLUSIVO DE IMPRESSÃO
+(fica oculto na tela; só aparece em @media print,
+no topo do relatório impresso pelo botão "Imprimir")
+========================= */
+
+.cabecalho-impressao{
+    display:none;
+}
+
+/* =========================
 CARDS
 ========================= */
 
@@ -699,34 +709,167 @@ IMPRESSÃO
 
 @media print{
 
-    .card:has(.upload-area),
-    .card .filtros,
-    .card .acoes,
-    .whatsapp,
-    .loading,
-    .container h1::after{
-
-        display:none;
+    @page{
+        size:A4 portrait;
+        margin:14mm;
     }
 
     body{
-
-        background:white;
-        color:#111;
+        background:#ffffff !important;
+        color:#1A1D21;
+        padding:0;
     }
 
-    .card,
-    .loja-card,
-    .ptl-card{
+    .container h1,
+    .container h1::after,
+    .subtitulo,
+    .card:has(.upload-area),
+    .card:has(.filtros),
+    .card .acoes,
+    .card h2,
+    .whatsapp,
+    .loading{
+        display:none !important;
+    }
 
-        background:white;
+    /* Card que sobra (o de Resultado) perde o chrome
+       escuro e vira um wrapper neutro no papel */
+    .card{
+        background:none !important;
+        border:none;
         box-shadow:none;
-        border:1px solid #ccc;
+        padding:0;
+        margin-bottom:0;
     }
 
-    .loja-titulo,
-    .ptl-titulo{
+    /* Cabeçalho de impressão vira visível e assume
+       o papel do h1/subtítulo que ficam escondidos */
+    .cabecalho-impressao{
+        display:flex !important;
+        justify-content:space-between;
+        align-items:flex-end;
+        border-bottom:3px solid #F2A93B;
+        padding-bottom:10px;
+        margin-bottom:18px;
+    }
 
-        color:#111 !important;
+    .cabecalho-impressao h1{
+        font-family:var(--font-display);
+        font-size:20px;
+        font-weight:700;
+        letter-spacing:.03em;
+        text-transform:uppercase;
+        color:#1A1D21;
+    }
+
+    .meta-impressao{
+        font-size:11px;
+        color:#5B6570;
+    }
+
+    /* KPIs viram uma faixa de números discreta,
+       sem cards com sombra/gradiente */
+    .kpis{
+        display:flex;
+        gap:20px;
+        margin-bottom:18px;
+        page-break-inside:avoid;
+    }
+
+    .kpi-card{
+        background:none !important;
+        border:none;
+        border-left:3px solid #ccc;
+        box-shadow:none;
+        padding:4px 12px;
+        flex:none;
+    }
+
+    .kpi-card:nth-child(1){ border-left-color:#4C8FD1; }
+    .kpi-card:nth-child(2){ border-left-color:#F2A93B; }
+    .kpi-card:nth-child(3){ border-left-color:#3DCB82; }
+    .kpi-card:nth-child(4){ border-left-color:#E8564F; }
+
+    .kpi-card span{
+        font-size:16px;
+        color:#1A1D21 !important;
+    }
+
+    #resultado{
+        gap:14px;
+    }
+
+    .loja-card{
+        background:#ffffff;
+        border:1px solid #ccc;
+        border-radius:0;
+        padding:0;
+        page-break-inside:avoid;
+        margin-bottom:14px;
+    }
+
+    .loja-titulo{
+        background:#1D2329;
+        color:#ffffff !important;
+        border-left:none;
+        padding:8px 14px;
+        font-size:14px;
+        margin-bottom:0;
+        -webkit-print-color-adjust:exact;
+        print-color-adjust:exact;
+    }
+
+    .ptl-card{
+        background:#ffffff;
+        border:none;
+        border-top:1px solid #E2E5E9;
+        border-left:none;
+        border-radius:0;
+        padding:10px 14px;
+        margin-bottom:0;
+        page-break-inside:avoid;
+    }
+
+    .ptl-titulo{
+        color:#1A1D21 !important;
+        font-size:12.5px;
+        margin-bottom:6px;
+    }
+
+    .tabela{
+        font-size:10.5px;
+        min-width:0;
+    }
+
+    .tabela thead{
+        display:table-header-group;
+        background:#F3F4F6 !important;
+        -webkit-print-color-adjust:exact;
+        print-color-adjust:exact;
+    }
+
+    .tabela th{
+        color:#5B6570;
+        border-color:#E2E5E9;
+    }
+
+    .tabela td{
+        color:#1A1D21;
+        border-color:#E2E5E9;
+    }
+
+    .tabela tbody tr{
+        page-break-inside:avoid;
+    }
+
+    .tabela tbody tr:nth-child(even){
+        background:#FAFBFC !important;
+        -webkit-print-color-adjust:exact;
+        print-color-adjust:exact;
+    }
+
+    .resumo-ptl{
+        color:#1A1D21 !important;
+        font-size:11px;
     }
 }

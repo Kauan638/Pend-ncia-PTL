@@ -852,8 +852,22 @@ htmlTabela +=
 
 function gerarTextoWhatsapp(){
 
+    const agora =
+    new Date().toLocaleString(
+        "pt-BR",
+        {
+            day:"2-digit",
+            month:"2-digit",
+            year:"numeric",
+            hour:"2-digit",
+            minute:"2-digit"
+        }
+    );
+
     let texto =
-`🚨 PENDÊNCIAS PTL
+`🚨 *PENDÊNCIAS PTL*
+🗓️ ${agora}
+────────────────
 
 `;
 
@@ -876,7 +890,7 @@ function gerarTextoWhatsapp(){
         totalLojas++;
 
         texto +=
-`🏪 LOJA ${loja}
+`🏪 *LOJA ${loja}*
 
 `;
 
@@ -912,9 +926,9 @@ function gerarTextoWhatsapp(){
             volumesPTL;
 
             texto +=
-`📦 ${ptl}
-SKUs: ${new Set(itens.map(i => i.sku)).size}
-Volumes: ${volumesPTL}
+`   📦 ${ptl}
+      • SKUs: ${new Set(itens.map(i => i.sku)).size}
+      • Volumes: ${volumesPTL.toLocaleString("pt-BR")}
 
 `;
 
@@ -928,13 +942,12 @@ Volumes: ${volumesPTL}
     });
 
     texto +=
-`📊 RESUMO
+`📊 *RESUMO GERAL*
 
-Lojas: ${totalLojas}
-PTLs: ${totalPTLs}
-SKUs: ${skusUnicos.size}
-Volumes: ${totalVolumes.toLocaleString("pt-BR")}
-`;
+🏪 Lojas: ${totalLojas}
+📦 PTLs: ${totalPTLs}
+🔑 SKUs: ${skusUnicos.size.toLocaleString("pt-BR")}
+📦 Volumes: ${totalVolumes.toLocaleString("pt-BR")}`;
 
     document.getElementById(
         "textoWhatsapp"
@@ -964,6 +977,49 @@ function copiarWhatsapp(){
     alert(
         "Texto copiado!"
     );
+
+}
+
+// ========================================
+// IMPRIMIR RESULTADO (TELA)
+// ========================================
+
+function imprimirResultado(){
+
+    if(!Object.keys(agrupado).length){
+
+        alert(
+            "Nenhum dado para imprimir. Processe os arquivos primeiro."
+        );
+
+        return;
+
+    }
+
+    const agora =
+    new Date().toLocaleString(
+        "pt-BR",
+        {
+            day:"2-digit",
+            month:"2-digit",
+            year:"numeric",
+            hour:"2-digit",
+            minute:"2-digit"
+        }
+    );
+
+    const totalVolumes =
+    Object.values(agrupado)
+    .flatMap(loja=>Object.values(loja))
+    .flat()
+    .length;
+
+    document.getElementById(
+        "metaImpressao"
+    ).innerText =
+    `Gerado em ${agora} · ${totalVolumes.toLocaleString("pt-BR")} volumes`;
+
+    window.print();
 
 }
 
@@ -1103,135 +1159,9 @@ function(){
 };
 
 
-function copiarWhatsappCompleto(){
-    copiarWhatsapp();
-}
-
-function copiarWhatsappResumo(){
-
-    const textoOriginal =
-    document.getElementById(
-        "textoWhatsapp"
-    ).value;
-
-    const linhas =
-    textoOriginal.split("\n");
-
-    const resumo = [];
-
-    resumo.push(
-        "🚨 PENDÊNCIAS PTL\n"
-    );
-
-    const resumoGeral =
-    linhas.find(
-        l=>l.includes("Lojas:")
-    );
-
-    const ptls =
-    linhas.find(
-        l=>l.includes("PTLs:")
-    );
-
-    const skus =
-    linhas.find(
-        l=>l.includes("SKUs:")
-    );
-
-    const volumes =
-    linhas.find(
-        l=>l.includes("Volumes:")
-    );
-
-    resumo.push(
-        "📊 RESUMO GERAL\n"
-    );
-
-    if(resumoGeral)
-    resumo.push(resumoGeral);
-
-    if(ptls)
-    resumo.push(ptls);
-
-    if(skus)
-    resumo.push(skus);
-
-    if(volumes)
-    resumo.push(volumes);
-
-    navigator.clipboard.writeText(
-        resumo.join("\n")
-    );
-
-    alert(
-        "Resumo copiado!"
-    );
-
-}
-
-function baixarImagemResumo(){
-
-    const card =
-    document.createElement(
-        "div"
-    );
-
-    card.style.width =
-    "900px";
-
-    card.style.padding =
-    "30px";
-
-    card.style.background =
-    "#ffffff";
-
-    card.style.color =
-    "#000";
-
-    card.style.fontFamily =
-    "Segoe UI";
-
-    card.innerHTML = `
-
-    <h1>
-    🚨 Pendência PTL
-    </h1>
-
-    <pre style="font-size:20px">
-${document.getElementById(
-"textoWhatsapp"
-).value}
-    </pre>
-
-    `;
-
-    document.body.appendChild(
-        card
-    );
-
-    html2canvas(card)
-    .then(canvas=>{
-
-        const link =
-        document.createElement(
-            "a"
-        );
-
-        link.download =
-        "pendencia-ptl.png";
-
-        link.href =
-        canvas.toDataURL(
-            "image/png"
-        );
-
-        link.click();
-
-        card.remove();
-
-    });
-
-}
+// (funções copiarWhatsappCompleto, copiarWhatsappResumo e
+// baixarImagemResumo ficam definidas mais abaixo, já na
+// versão final/profissional usada pelos botões)
 
 
 function copiarWhatsappCompleto(){
@@ -1263,35 +1193,40 @@ function copiarWhatsappResumo(){
         "textoWhatsapp"
     ).value;
 
-    const linhas =
-    textoOriginal.split("\n");
+    const marcador =
+    "📊 *RESUMO GERAL*";
 
-    const resumo = [];
-
-    resumo.push(
-        "🚨 PENDÊNCIAS PTL\n"
+    const posicao =
+    textoOriginal.indexOf(
+        marcador
     );
 
-    linhas.forEach(linha=>{
+    const blocoResumo =
+    posicao >= 0
+    ? textoOriginal.slice(posicao)
+    : textoOriginal;
 
-        if(
-            linha.includes("Lojas:")
-            ||
-            linha.includes("PTLs:")
-            ||
-            linha.includes("SKUs:")
-            ||
-            linha.includes("Volumes:")
-        ){
-
-            resumo.push(linha);
-
+    const agora =
+    new Date().toLocaleString(
+        "pt-BR",
+        {
+            day:"2-digit",
+            month:"2-digit",
+            year:"numeric",
+            hour:"2-digit",
+            minute:"2-digit"
         }
+    );
 
-    });
+    const resumo =
+`🚨 *PENDÊNCIAS PTL*
+🗓️ ${agora}
+────────────────
+
+${blocoResumo}`;
 
     navigator.clipboard.writeText(
-        resumo.join("\n")
+        resumo
     );
 
     alert(
@@ -1327,12 +1262,12 @@ async function baixarImagemResumo(){
             const volumes =
             itens.length;
 
-            blocos.push(
-`🏪 LOJA ${loja}
-📦 ${ptl}
-SKUs: ${skus}
-Volumes: ${volumes}`
-            );
+            blocos.push({
+                loja,
+                ptl,
+                skus,
+                volumes
+            });
 
         });
 
@@ -1363,11 +1298,32 @@ Volumes: ${volumes}`
         18
     );
 
+    const agora =
+    new Date().toLocaleString(
+        "pt-BR",
+        {
+            day:"2-digit",
+            month:"2-digit",
+            year:"numeric",
+            hour:"2-digit",
+            minute:"2-digit"
+        }
+    );
+
     for(
         let pagina = 0;
         pagina < totalPaginas;
         pagina++
     ){
+
+        const itensPagina =
+        paginas[pagina];
+
+        const volumesPagina =
+        itensPagina.reduce(
+            (s,x)=>s+x.volumes,
+            0
+        );
 
         const card =
         document.createElement(
@@ -1375,31 +1331,183 @@ Volumes: ${volumes}`
         );
 
         card.style.width =
-        "1200px";
-
-        card.style.padding =
-        "30px";
+        "1000px";
 
         card.style.background =
-        "#fff";
-
-        card.style.color =
-        "#000";
+        "#ffffff";
 
         card.style.fontFamily =
-        "Segoe UI";
+        "'Inter','Segoe UI',sans-serif";
+
+        card.style.color =
+        "#1A1D21";
+
+        card.style.overflow =
+        "hidden";
+
+        card.style.borderRadius =
+        "10px";
+
+        card.style.border =
+        "1px solid #E2E5E9";
+
+        let linhas = "";
+
+        itensPagina.forEach(item=>{
+
+            linhas += `
+            <div style="
+                display:flex;
+                align-items:center;
+                justify-content:space-between;
+                gap:16px;
+                padding:16px 28px;
+                border-bottom:1px solid #EEF0F2;
+                background:#FFFFFF;
+            ">
+
+                <div style="
+                    display:flex;
+                    align-items:center;
+                    gap:14px;
+                    min-width:0;
+                ">
+
+                    <div style="
+                        width:4px;
+                        align-self:stretch;
+                        min-height:36px;
+                        background:#F2A93B;
+                        border-radius:2px;
+                        flex-shrink:0;
+                    "></div>
+
+                    <div style="min-width:0;">
+
+                        <div style="
+                            font-size:12px;
+                            font-weight:700;
+                            letter-spacing:.06em;
+                            text-transform:uppercase;
+                            color:#8B97A3;
+                        ">
+                            🏪 Loja ${item.loja}
+                        </div>
+
+                        <div style="
+                            font-size:17px;
+                            font-weight:700;
+                            color:#1A1D21;
+                            margin-top:2px;
+                        ">
+                            📦 ${item.ptl}
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div style="
+                    display:flex;
+                    gap:22px;
+                    flex-shrink:0;
+                    text-align:center;
+                ">
+
+                    <div>
+                        <div style="
+                            font-family:'JetBrains Mono',Consolas,monospace;
+                            font-size:20px;
+                            font-weight:700;
+                            color:#4C8FD1;
+                        ">${item.skus}</div>
+                        <div style="
+                            font-size:10px;
+                            letter-spacing:.08em;
+                            text-transform:uppercase;
+                            color:#8B97A3;
+                        ">SKUs</div>
+                    </div>
+
+                    <div>
+                        <div style="
+                            font-family:'JetBrains Mono',Consolas,monospace;
+                            font-size:20px;
+                            font-weight:700;
+                            color:#3DCB82;
+                        ">${item.volumes}</div>
+                        <div style="
+                            font-size:10px;
+                            letter-spacing:.08em;
+                            text-transform:uppercase;
+                            color:#8B97A3;
+                        ">Volumes</div>
+                    </div>
+
+                </div>
+
+            </div>
+            `;
+
+        });
 
         card.innerHTML = `
-            <h1>🚨 Pendência PTL</h1>
-            <h3>Página ${pagina+1}/${totalPaginas}</h3>
 
-            <pre style="
-                font-size:22px;
-                line-height:1.5;
-                white-space:pre-wrap;
+            <div style="
+                background:#1D2329;
+                padding:22px 28px;
+                display:flex;
+                align-items:center;
+                justify-content:space-between;
+                border-bottom:3px solid #F2A93B;
             ">
-${paginas[pagina].join("\n\n")}
-            </pre>
+
+                <div>
+                    <div style="
+                        font-family:'Oswald','Segoe UI',sans-serif;
+                        font-size:22px;
+                        font-weight:700;
+                        letter-spacing:.03em;
+                        text-transform:uppercase;
+                        color:#ffffff;
+                    ">🚨 Pendência PTL</div>
+
+                    <div style="
+                        font-size:12px;
+                        color:#9AA5B1;
+                        margin-top:4px;
+                    ">Relatório gerado em ${agora}</div>
+                </div>
+
+                <div style="
+                    font-family:'JetBrains Mono',Consolas,monospace;
+                    font-size:12px;
+                    color:#F2A93B;
+                    font-weight:700;
+                    white-space:nowrap;
+                ">Página ${pagina+1}/${totalPaginas}</div>
+
+            </div>
+
+            ${linhas}
+
+            <div style="
+                display:flex;
+                justify-content:flex-end;
+                gap:24px;
+                padding:14px 28px;
+                background:#FAFBFC;
+            ">
+                <div style="
+                    font-size:12px;
+                    color:#5B6570;
+                ">
+                    Volumes nesta página:
+                    <b style="color:#1A1D21;">
+                        ${volumesPagina.toLocaleString("pt-BR")}
+                    </b>
+                </div>
+            </div>
         `;
 
         document.body.appendChild(
@@ -1493,131 +1601,300 @@ function imprimirPorVolume(){
 
     });
 
-    const grupos = {
+    if(!dados.length){
 
-        "🔴 Acima de 50 Volumes":
-        dados.filter(
-            x => x.volumes > 50
-        ),
+        alert(
+            "Nenhum dado para imprimir. Processe os arquivos primeiro."
+        );
 
-        "🟠 De 20 a 49 Volumes":
-        dados.filter(
-            x => x.volumes >=20 &&
-                 x.volumes <=49
-        ),
+        return;
 
-        "🟡 De 10 a 19 Volumes":
-        dados.filter(
-            x => x.volumes >=10 &&
-                 x.volumes <=19
-        ),
+    }
 
-        "🟢 Até 9 Volumes":
-        dados.filter(
-            x => x.volumes <=9
-        )
+    const grupos = [
 
-    };
+        {
+            titulo:"Acima de 50 Volumes",
+            emoji:"🔴",
+            cor:"#E8564F",
+            corFundo:"#FDECEB",
+            itens: dados.filter(x => x.volumes > 50)
+        },
+
+        {
+            titulo:"De 20 a 49 Volumes",
+            emoji:"🟠",
+            cor:"#F2A93B",
+            corFundo:"#FEF6E7",
+            itens: dados.filter(
+                x => x.volumes >=20 && x.volumes <=49
+            )
+        },
+
+        {
+            titulo:"De 10 a 19 Volumes",
+            emoji:"🟡",
+            cor:"#D7B740",
+            corFundo:"#FBF8E7",
+            itens: dados.filter(
+                x => x.volumes >=10 && x.volumes <=19
+            )
+        },
+
+        {
+            titulo:"Até 9 Volumes",
+            emoji:"🟢",
+            cor:"#3DCB82",
+            corFundo:"#EAFAF2",
+            itens: dados.filter(x => x.volumes <=9)
+        }
+
+    ];
+
+    const totalGeral =
+    dados.reduce(
+        (s,x)=>s+x.volumes,
+        0
+    );
+
+    const agora =
+    new Date().toLocaleString(
+        "pt-BR",
+        {
+            day:"2-digit",
+            month:"2-digit",
+            year:"numeric",
+            hour:"2-digit",
+            minute:"2-digit"
+        }
+    );
 
     let html = `
-    <html>
-    <head>
+<!DOCTYPE html>
+<html lang="pt-BR">
 
-    <style>
+<head>
 
-    body{
-        font-family:Arial;
-        padding:20px;
+<meta charset="UTF-8">
+
+<title>Pendência PTL — Por Volume</title>
+
+<style>
+
+@page{
+    size:A4 landscape;
+    margin:12mm;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Segoe UI',Arial,sans-serif;
+    color:#1A1D21;
+    margin:0;
+}
+
+.cabecalho{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    border-bottom:3px solid #F2A93B;
+    padding-bottom:10px;
+    margin-bottom:16px;
+}
+
+.cabecalho h1{
+    margin:0;
+    font-size:20px;
+    letter-spacing:.03em;
+    text-transform:uppercase;
+    color:#1D2329;
+}
+
+.cabecalho .meta{
+    text-align:right;
+    font-size:11px;
+    color:#5B6570;
+    line-height:1.5;
+}
+
+.secao{
+    margin-bottom:22px;
+    page-break-inside:avoid;
+}
+
+.secao-titulo{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:8px 14px;
+    border-radius:4px;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    margin-bottom:6px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    table-layout:fixed;
+}
+
+thead{
+    display:table-header-group;
+}
+
+tr{
+    page-break-inside:avoid;
+}
+
+th{
+    background:#1D2329;
+    color:#fff;
+    padding:7px 8px;
+    font-size:10px;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    text-align:left;
+    border:1px solid #1D2329;
+}
+
+td{
+    border:1px solid #E2E5E9;
+    padding:6px 8px;
+    font-size:11px;
+    vertical-align:top;
+    word-wrap:break-word;
+}
+
+tbody tr:nth-child(even){
+    background:#FAFBFC;
+}
+
+.colLoja{ width:6%; }
+.colPtl{ width:12%; }
+.colSku{ width:9%; }
+.colDescricao{ width:29%; }
+.colApanha{ width:12%; }
+.colPulmao{ width:20%; }
+.colVolumes{
+    width:8%;
+    text-align:center;
+    font-weight:700;
+}
+
+.rodape{
+    margin-top:10px;
+    text-align:right;
+    font-size:11px;
+    color:#5B6570;
+}
+
+@media print{
+
+    .secao-titulo,
+    th{
+        -webkit-print-color-adjust:exact;
+        print-color-adjust:exact;
     }
 
-    h2{
-        background:#eee;
-        padding:10px;
-    }
+}
 
-    table{
-        width:100%;
-        border-collapse:collapse;
-        margin-bottom:30px;
-    }
+</style>
 
-    th,td{
-        border:1px solid #ccc;
-        padding:8px;
-    }
+</head>
 
-    </style>
+<body>
 
-    </head>
-
-    <body>
+<div class="cabecalho">
 
     <h1>
-    📦 Pendências por Volume
+        🚨 Pendência PTL — Relatório por Volume
     </h1>
-    `;
 
-    for(const titulo in grupos){
+    <div class="meta">
+        Gerado em ${agora}<br>
+        Total geral: <b>${totalGeral.toLocaleString("pt-BR")}</b> volumes
+        em <b>${dados.length.toLocaleString("pt-BR")}</b> SKUs
+    </div>
 
-        if(
-            grupos[titulo]
-            .length === 0
-        ) continue;
+</div>
+`;
+
+    grupos.forEach(grupo=>{
+
+        if(!grupo.itens.length) return;
+
+        const volumesGrupo =
+        grupo.itens.reduce(
+            (s,x)=>s+x.volumes,
+            0
+        );
 
         html += `
-        <h2>${titulo}</h2>
+        <div class="secao">
+
+            <div class="secao-titulo" style="
+                background:${grupo.corFundo};
+                color:${grupo.cor};
+                border-left:5px solid ${grupo.cor};
+            ">
+                <span>${grupo.emoji} ${grupo.titulo}</span>
+                <span>${grupo.itens.length} SKUs · ${volumesGrupo.toLocaleString("pt-BR")} volumes</span>
+            </div>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th class="colLoja">Loja</th>
+                        <th class="colPtl">PTL</th>
+                        <th class="colSku">SKU</th>
+                        <th class="colDescricao">Descrição</th>
+                        <th class="colApanha">Apanha</th>
+                        <th class="colPulmao">Pulmão</th>
+                        <th class="colVolumes">Volumes</th>
+                    </tr>
+                </thead>
+
+                <tbody>
         `;
 
-        html += `
-        <table>
-
-        <tr>
-            <th>Loja</th>
-            <th>PTL</th>
-            <th>SKU</th>
-            <th>Descrição</th>
-            <th>Apanha</th>
-            <th>Pulmão</th>
-            <th>Volumes</th>
-        </tr>
-        `;
-
-        grupos[titulo]
-        .sort(
-            (a,b)=>
-            b.volumes-a.volumes
-        )
+        grupo.itens
+        .sort((a,b)=>b.volumes-a.volumes)
         .forEach(item=>{
 
             html += `
             <tr>
-
-                <td>${item.loja}</td>
-
-                <td>${item.ptl}</td>
-
-                <td>${item.sku}</td>
-
-                <td>${item.descricao}</td>
-
-                <td>${item.apanha}</td>
-
-                <td>${item.pulmao}</td>
-
-                <td>${item.volumes}</td>
-
+                <td class="colLoja">${item.loja}</td>
+                <td class="colPtl">${item.ptl}</td>
+                <td class="colSku">${item.sku}</td>
+                <td class="colDescricao">${item.descricao}</td>
+                <td class="colApanha">${item.apanha}</td>
+                <td class="colPulmao">${item.pulmao}</td>
+                <td class="colVolumes" style="color:${grupo.cor};">${item.volumes}</td>
             </tr>
             `;
 
         });
 
         html += `
-        </table>
+                </tbody>
+            </table>
+
+        </div>
         `;
 
-    }
+    });
 
     html += `
+    <div class="rodape">
+        Pendência PTL · relatório gerado automaticamente
+    </div>
     </body>
     </html>
     `;
@@ -1628,6 +1905,18 @@ function imprimirPorVolume(){
         "_blank"
     );
 
+    if(!janela){
+
+        alert(
+            "O navegador bloqueou a janela de impressão."
+        );
+
+        return;
+
+    }
+
+    janela.document.open();
+
     janela.document.write(
         html
     );
@@ -1635,6 +1924,8 @@ function imprimirPorVolume(){
     janela.document.close();
 
     setTimeout(()=>{
+
+        janela.focus();
 
         janela.print();
 
