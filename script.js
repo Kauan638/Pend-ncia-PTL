@@ -9,6 +9,60 @@ let mapaApanhas = {};
 let mapaPulmoes = {};
 
 // ========================================
+// NOME DO ARQUIVO SELECIONADO
+// ========================================
+
+document
+.getElementById("arquivo")
+.addEventListener("change", function(){
+
+    const arquivo = this.files[0];
+
+    document
+    .getElementById("nomeArquivo")
+    .innerText =
+    arquivo
+    ? arquivo.name
+    : "Nenhum arquivo selecionado";
+
+});
+
+document
+.getElementById("arquivoEnderecos")
+.addEventListener("change", function(){
+
+    const arquivo = this.files[0];
+
+    document
+    .getElementById("nomeEnderecos")
+    .innerText =
+    arquivo
+    ? arquivo.name
+    : "Nenhum arquivo selecionado";
+
+});
+
+// ========================================
+// LOADING
+// ========================================
+
+function mostrarLoading(){
+
+    document
+    .getElementById("loading")
+    .style.display = "flex";
+
+}
+
+function ocultarLoading(){
+
+    document
+    .getElementById("loading")
+    .style.display = "none";
+
+}
+
+// ========================================
 // PROCESSAR ARQUIVO
 // ========================================
 
@@ -27,6 +81,8 @@ async function processarArquivo(){
 
         return;
     }
+
+    mostrarLoading();
 
     try{
 
@@ -70,6 +126,8 @@ async function processarArquivo(){
         alert(
             "Erro ao ler arquivo."
         );
+
+        ocultarLoading();
 
     }
 
@@ -423,6 +481,8 @@ function tratarDados(dados){
 console.log(dadosOriginais[0]);
     
     gerarAgrupamento();
+
+    ocultarLoading();
 
 }
 // ========================================

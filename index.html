@@ -3,146 +3,326 @@
 
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
 
-<title>Pendência PTL</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="style.css">
+    <title>
+        Pendência PTL
+    </title>
 
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- XLSX -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <!-- html2canvas -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 </head>
 
 <body>
 
-<header>
+    <div class="container">
 
-<h1>🚨 Pendência PTL</h1>
+        <h1>
+            🚨 Pendência PTL
+        </h1>
 
-<p>
-Relatório de pendências por loja e PTL
-</p>
+        <p class="subtitulo">
+            Relatório de pendências por loja e PTL
+        </p>
 
-</header>
+        <!-- ===================================== -->
+        <!-- UPLOADS -->
+        <!-- ===================================== -->
 
-<div class="upload">
+        <div class="card">
 
-<input
-type="file"
-id="arquivo"
-accept=".csv,.xlsx,.xls">
+            <h2>
+                Arquivos
+            </h2>
 
-<label>Arquivo Velox</label>
+            <div class="upload-area">
 
-<input
-type="file"
-id="arquivoEnderecos"
-accept=".txt">
+                <!-- VELOX -->
 
-<label>Posição de Endereços</label>
-    
-<button onclick="processarArquivo()">
-Processar Arquivo
-</button>
+                <div class="upload-box">
 
-</div>
+                    <label>
+                        📊 Arquivo Velox
+                    </label>
 
-<section class="kpis">
+                    <label
+                        class="upload-btn"
+                        for="arquivo">
 
-<div class="kpi">
-<span id="kpiLojas">0</span>
-<label>Lojas</label>
-</div>
+                        Selecionar Arquivo
 
-<div class="kpi">
-<span id="kpiPtls">0</span>
-<label>PTLs</label>
-</div>
+                    </label>
 
-<div class="kpi">
-<span id="kpiSkus">0</span>
-<label>SKUs</label>
-</div>
+                    <input
+                        type="file"
+                        id="arquivo"
+                        accept=".csv,.xlsx,.xls">
 
-<div class="kpi">
-<span id="kpiVolumes">0</span>
-<label>Volumes</label>
-</div>
+                    <div
+                        class="upload-nome"
+                        id="nomeArquivo">
 
-</section>
+                        Nenhum arquivo selecionado
 
-<section class="filtros">
+                    </div>
 
-<input
-type="text"
-id="filtroLoja"
-placeholder="Filtrar Loja"
-onkeyup="renderizar()">
+                </div>
 
-<input
-type="text"
-id="filtroPTL"
-placeholder="Filtrar PTL"
-onkeyup="renderizar()">
+                <!-- POSIÇÃO DE ENDEREÇOS -->
 
-<input
-type="text"
-id="filtroSKU"
-placeholder="Filtrar SKU"
-onkeyup="renderizar()">
+                <div class="upload-box">
 
-<input
-type="date"
-id="filtroData"
-onchange="aplicarFiltros()">
-    
-</section>
+                    <label>
+                        📦 Posição de Endereços
+                    </label>
 
-<section class="acoes">
+                    <label
+                        class="upload-btn"
+                        for="arquivoEnderecos">
 
-<button onclick="copiarWhatsappResumo()">
-📱 WhatsApp Resumo
-</button>
+                        Selecionar Arquivo
 
-<button onclick="baixarImagemResumo()">
-🖼️ Baixar Imagem
-</button>
+                    </label>
 
-<button onclick="copiarWhatsappCompleto()">
-📄 Relatório Completo
-</button>
+                    <input
+                        type="file"
+                        id="arquivoEnderecos"
+                        accept=".txt">
 
-<button onclick="exportarExcel()">
-📊 Exportar Excel
-</button>
+                    <div
+                        class="upload-nome"
+                        id="nomeEnderecos">
 
-<button onclick="window.print()">
-🖨️ Imprimir
-</button>
+                        Nenhum arquivo selecionado
 
-<button onclick="imprimirPorVolume()">
-    📦 Imprimir por Volume
-</button>
-  
-</section>
+                    </div>
 
+                </div>
 
-<div id="resultado"></div>
+            </div>
 
-<section class="whatsapp">
+            <br>
 
-<h2>Texto WhatsApp</h2>
+            <div class="acoes">
 
-<textarea
-id="textoWhatsapp"
-readonly>
-</textarea>
+                <button
+                    class="btn-processar"
+                    onclick="processarArquivo()">
 
-</section>
+                    🚀 Processar Arquivo
 
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-<script src="script.js"></script>
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- ===================================== -->
+        <!-- KPIs -->
+        <!-- ===================================== -->
+
+        <div class="kpis">
+
+            <div class="kpi-card">
+
+                <h3>
+                    Lojas
+                </h3>
+
+                <span id="kpiLojas">
+                    0
+                </span>
+
+            </div>
+
+            <div class="kpi-card">
+
+                <h3>
+                    PTLs
+                </h3>
+
+                <span id="kpiPtls">
+                    0
+                </span>
+
+            </div>
+
+            <div class="kpi-card">
+
+                <h3>
+                    SKUs
+                </h3>
+
+                <span id="kpiSkus">
+                    0
+                </span>
+
+            </div>
+
+            <div class="kpi-card">
+
+                <h3>
+                    Volumes
+                </h3>
+
+                <span id="kpiVolumes">
+                    0
+                </span>
+
+            </div>
+
+        </div>
+
+        <!-- ===================================== -->
+        <!-- FILTROS -->
+        <!-- ===================================== -->
+
+        <div class="card">
+
+            <h2>
+                Filtros
+            </h2>
+
+            <div class="filtros">
+
+                <input
+                    type="text"
+                    id="filtroLoja"
+                    placeholder="Filtrar Loja"
+                    onkeyup="renderizar()">
+
+                <input
+                    type="text"
+                    id="filtroPTL"
+                    placeholder="Filtrar PTL"
+                    onkeyup="renderizar()">
+
+                <input
+                    type="text"
+                    id="filtroSKU"
+                    placeholder="Filtrar SKU"
+                    onkeyup="renderizar()">
+
+                <input
+                    type="date"
+                    id="filtroData"
+                    onchange="aplicarFiltros()">
+
+            </div>
+
+        </div>
+
+        <!-- ===================================== -->
+        <!-- RESULTADO -->
+        <!-- ===================================== -->
+
+        <div class="card">
+
+            <h2>
+                Resultado
+            </h2>
+
+            <div class="acoes">
+
+                <button
+                    class="btn-exportar"
+                    onclick="copiarWhatsappResumo()">
+
+                    📱 WhatsApp Resumo
+
+                </button>
+
+                <button
+                    class="btn-exportar"
+                    onclick="baixarImagemResumo()">
+
+                    🖼️ Baixar Imagem
+
+                </button>
+
+                <button
+                    class="btn-exportar"
+                    onclick="copiarWhatsappCompleto()">
+
+                    📄 Relatório Completo
+
+                </button>
+
+                <button
+                    class="btn-exportar"
+                    onclick="exportarExcel()">
+
+                    📊 Exportar Excel
+
+                </button>
+
+                <button
+                    class="btn-exportar"
+                    onclick="window.print()">
+
+                    🖨️ Imprimir
+
+                </button>
+
+                <button
+                    class="btn-exportar"
+                    onclick="imprimirPorVolume()">
+
+                    📦 Imprimir por Volume
+
+                </button>
+
+            </div>
+
+            <div id="resultado"></div>
+
+        </div>
+
+        <!-- ===================================== -->
+        <!-- TEXTO WHATSAPP -->
+        <!-- ===================================== -->
+
+        <div class="card whatsapp">
+
+            <h2>
+                Texto WhatsApp
+            </h2>
+
+            <textarea
+                id="textoWhatsapp"
+                readonly>
+            </textarea>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================== -->
+    <!-- LOADING -->
+    <!-- ===================================== -->
+
+    <div
+        class="loading"
+        id="loading">
+
+        <div class="spinner"></div>
+
+        <p>
+            Processando arquivo...
+        </p>
+
+    </div>
+
+    <script src="script.js"></script>
 
 </body>
 

@@ -1,413 +1,724 @@
 /* =========================================================
    PENDÊNCIA PTL — PAINEL INDUSTRIAL
-   Mesmo sistema de tokens do Gerador de Abastecimento PCP:
-   grafite + âmbar (ação) / verde (ok) / vermelho (crítico) /
-   azul (neutro), com ciano e violeta para ações extras.
-   Tipografia: Oswald (títulos) / Inter (texto) /
-   JetBrains Mono (dados numéricos e monoespaçados).
+   Mesmo sistema de tokens/estrutura do Gerador de Abastecimento PCP:
+   grafite + âmbar (ação) / verde (ok) / vermelho (crítico) / azul (neutro)
+   Tipografia: Oswald (display) + Inter (corpo) + JetBrains Mono (dados)
 ========================================================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
 :root{
-
     --bg:            #14181C;
     --surface:       #1D2329;
-    --surface-2:     #232A31;
+    --surface-alt:   #232A31;
     --border:        #2A323B;
     --border-light:  #38424D;
 
     --text:          #E7ECF1;
-    --muted:         #8B97A3;
+    --text-muted:    #8B97A3;
 
     --amber:         #F2A93B;
+    --amber-dim:     #6B5525;
     --green:         #3DCB82;
+    --green-dim:     #1F4B36;
     --red:           #E8564F;
+    --red-dim:       #4E2523;
     --blue:          #4C8FD1;
-    --cyan:          #4FB8C7;
-    --violet:        #9B84D6;
+    --blue-dim:      #223A52;
 
     --radius:        6px;
-    --radius-lg:     10px;
+    --radius-sm:     4px;
 
     --font-display:  'Oswald', 'Segoe UI', sans-serif;
     --font-body:     'Inter', 'Segoe UI', sans-serif;
     --font-mono:     'JetBrains Mono', 'Consolas', monospace;
 }
 
-body{
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
     font-family:var(--font-body);
-    background:var(--bg);
+}
+
+body{
+    background:
+        radial-gradient(ellipse at top, #1A2027 0%, var(--bg) 55%);
+    background-attachment:fixed;
+    padding:25px;
     color:var(--text);
-    padding:24px;
-    max-width:1400px;
-    margin:0 auto;
 }
 
-/* =========================================================
-   CABEÇALHO
-========================================================= */
+.container{
+    max-width:1700px;
+    margin:auto;
+}
 
-header{
+/* =========================
+TÍTULO + FAIXA DE SINALIZAÇÃO
+(assinatura visual: fita zebrada de doca)
+========================= */
+
+.container h1{
     text-align:center;
-    margin-bottom:28px;
-    padding-bottom:18px;
-    position:relative;
-}
-
-header h1{
+    margin-bottom:0;
+    color:var(--text);
     font-family:var(--font-display);
-    font-size:32px;
-    font-weight:700;
-    letter-spacing:.5px;
-    color:var(--red);
-    margin-bottom:6px;
+    font-weight:600;
+    font-size:2rem;
+    letter-spacing:.04em;
     text-transform:uppercase;
+    padding-bottom:18px;
 }
 
-header p{
-    color:var(--muted);
-    font-size:14px;
-}
-
-/* faixa zebrada de assinatura */
-header::after{
+.container h1::after{
     content:"";
     display:block;
-    height:4px;
-    width:100%;
-    margin-top:18px;
-    background:repeating-linear-gradient(
-        90deg,
-        var(--amber) 0px,
-        var(--amber) 18px,
-        var(--red) 18px,
-        var(--red) 36px,
-        var(--blue) 36px,
-        var(--blue) 54px,
-        var(--green) 54px,
-        var(--green) 72px
-    );
+    width:220px;
+    height:6px;
+    margin:16px auto 0;
     border-radius:2px;
+    background:repeating-linear-gradient(
+        135deg,
+        var(--red) 0px,
+        var(--red) 10px,
+        var(--bg) 10px,
+        var(--bg) 20px
+    );
     opacity:.85;
 }
 
-/* =========================================================
-   UPLOAD
-========================================================= */
+.subtitulo{
+    text-align:center;
+    color:var(--text-muted);
+    font-size:.9rem;
+    margin-bottom:25px;
+}
 
-.upload{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    justify-content:center;
-    flex-wrap:wrap;
+/* =========================
+CARDS
+========================= */
+
+.card{
     background:var(--surface);
     border:1px solid var(--border);
-    border-radius:var(--radius-lg);
-    padding:18px;
-    margin-bottom:24px;
+    border-radius:var(--radius);
+    padding:25px;
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.35);
+    margin-bottom:25px;
 }
 
-.upload label{
-    font-size:12px;
+.card h2{
+    margin-bottom:20px;
+    color:var(--text);
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:1.15rem;
+    letter-spacing:.06em;
     text-transform:uppercase;
-    letter-spacing:.4px;
-    color:var(--muted);
-    font-weight:600;
+    border-left:3px solid var(--amber);
+    padding-left:12px;
 }
 
-.upload input[type="file"]{
-    padding:9px 12px;
-    background:var(--surface-2);
-    color:var(--text);
-    border:1px solid var(--border-light);
+/* =========================
+UPLOADS
+========================= */
+
+.upload-area{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fit,minmax(350px,1fr));
+
+    gap:20px;
+}
+
+.upload-box{
+
+    border:1px dashed var(--border-light);
+
     border-radius:var(--radius);
-    font-family:var(--font-body);
-    font-size:13px;
-    max-width:220px;
+
+    padding:25px;
+
+    background:var(--surface-alt);
+
+    text-align:center;
+
+    transition:.25s;
 }
 
-.upload input[type="file"]::file-selector-button{
+.upload-box:hover{
+
+    border-color:var(--amber);
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 6px 20px rgba(242,169,59,.12);
+}
+
+.upload-box label{
+
+    display:block;
+
+    font-size:.85rem;
+
+    font-weight:700;
+
+    margin-bottom:15px;
+
+    color:var(--text-muted);
+
+    letter-spacing:.08em;
+
+    text-transform:uppercase;
+}
+
+.upload-box input{
+
+    display:none;
+}
+
+.upload-btn{
+
+    display:inline-block;
+
     background:var(--surface);
-    color:var(--text);
-    border:1px solid var(--border-light);
-    border-radius:var(--radius);
-    padding:6px 10px;
-    margin-right:8px;
-    font-family:var(--font-body);
-    font-weight:600;
+
+    border:1px solid var(--blue);
+
+    color:var(--blue);
+
+    padding:12px 22px;
+
+    border-radius:var(--radius-sm);
+
     cursor:pointer;
-    transition:.2s;
+
+    font-weight:600;
+
+    font-size:.9rem;
+
+    letter-spacing:.04em;
+
+    transition:.25s;
 }
 
-.upload input[type="file"]::file-selector-button:hover{
-    background:var(--border-light);
+.upload-btn:hover{
+
+    background:var(--blue);
+
+    color:#fff;
+}
+
+.upload-nome{
+
+    margin-top:15px;
+
+    color:var(--text-muted);
+
+    font-family:var(--font-mono);
+
+    font-size:.82rem;
+}
+
+/* =========================
+AÇÕES / BOTÕES
+========================= */
+
+.acoes{
+
+    display:flex;
+
+    gap:12px;
+
+    flex-wrap:wrap;
 }
 
 button{
+
     border:none;
+
+    padding:13px 24px;
+
+    border-radius:var(--radius-sm);
+
     cursor:pointer;
-    border-radius:var(--radius);
-    padding:10px 16px;
-    font-weight:600;
-    font-family:var(--font-body);
-    font-size:13px;
+
+    font-size:.85rem;
+
+    font-weight:700;
+
+    letter-spacing:.05em;
+
+    text-transform:uppercase;
+
     transition:.2s;
-    color:var(--bg);
+
+    font-family:var(--font-body);
 }
 
 button:hover{
-    filter:brightness(1.1);
-    transform:translateY(-1px);
+
+    transform:translateY(-2px);
+    filter:brightness(1.08);
 }
 
-.upload button{
+button:focus-visible{
+
+    outline:2px solid var(--amber);
+    outline-offset:2px;
+}
+
+.btn-processar{
+
+    background:var(--green);
+
+    color:#0B1F16;
+}
+
+.btn-processar:hover{
+
+    background:#33B672;
+}
+
+.btn-exportar{
+
     background:var(--amber);
-    color:#1A1406;
+
+    color:#241A05;
 }
 
-/* =========================================================
-   KPIs
-========================================================= */
+.btn-exportar:hover{
+
+    background:#E4991F;
+}
+
+/* =========================
+KPIS — INDICADORES DE PAINEL
+Cor da borda lateral = significado real do dado
+========================= */
 
 .kpis{
+
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-    gap:14px;
-    margin-bottom:24px;
+
+    grid-template-columns:
+        repeat(auto-fit,minmax(220px,1fr));
+
+    gap:20px;
+
+    margin-bottom:25px;
 }
 
-.kpi{
+.kpi-card{
+
     background:var(--surface);
+
     border:1px solid var(--border);
-    border-radius:var(--radius-lg);
-    padding:18px;
-    text-align:center;
+    border-left:4px solid var(--blue);
+
+    border-radius:var(--radius);
+
+    padding:22px 25px;
+
+    text-align:left;
+
+    box-shadow:
+        0 8px 24px rgba(0,0,0,.3);
 }
 
-.kpi span{
-    display:block;
-    font-family:var(--font-mono);
-    font-size:30px;
-    font-weight:700;
-    color:var(--blue);
-}
+.kpi-card h3{
 
-.kpi label{
-    color:var(--muted);
-    font-size:12px;
+    color:var(--text-muted);
+
+    margin-bottom:10px;
+
+    font-size:.75rem;
+
+    font-weight:600;
+
+    letter-spacing:.1em;
+
     text-transform:uppercase;
-    letter-spacing:.4px;
 }
 
-/* =========================================================
-   FILTROS
-========================================================= */
+.kpi-card span{
+
+    font-family:var(--font-mono);
+
+    font-size:2.2rem;
+
+    font-weight:700;
+
+    color:var(--text);
+}
+
+/* mapeamento semântico: 1 Lojas (neutro) / 2 PTLs (ação)
+   3 SKUs (ok) / 4 Volumes (crítico/atenção) */
+
+.kpi-card:nth-child(1){ border-left-color:var(--blue); }
+.kpi-card:nth-child(1) span{ color:var(--blue); }
+
+.kpi-card:nth-child(2){ border-left-color:var(--amber); }
+.kpi-card:nth-child(2) span{ color:var(--amber); }
+
+.kpi-card:nth-child(3){ border-left-color:var(--green); }
+.kpi-card:nth-child(3) span{ color:var(--green); }
+
+.kpi-card:nth-child(4){ border-left-color:var(--red); }
+.kpi-card:nth-child(4) span{ color:var(--red); }
+
+/* =========================
+FILTROS
+========================= */
 
 .filtros{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:10px;
-    margin-bottom:20px;
+
+    display:flex;
+
+    gap:15px;
+
+    flex-wrap:wrap;
 }
 
 .filtros input{
-    padding:11px 12px;
-    background:var(--surface);
+
+    flex:1;
+
+    min-width:220px;
+
+    padding:12px 14px;
+
+    background:var(--surface-alt);
+
+    border:1px solid var(--border-light);
+
+    border-radius:var(--radius-sm);
+
     color:var(--text);
-    border:1px solid var(--border);
-    border-radius:var(--radius);
+
+    font-size:14px;
+
     font-family:var(--font-body);
-    font-size:13px;
 }
 
 .filtros input::placeholder{
-    color:var(--muted);
+
+    color:var(--text-muted);
 }
 
 .filtros input:focus{
+
     outline:none;
-    border-color:var(--blue);
+
+    border-color:var(--amber);
 }
 
-/* =========================================================
-   AÇÕES
-========================================================= */
-
-.acoes{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-    margin-bottom:22px;
-}
-
-.acoes button:nth-child(1){
-    background:var(--green);
-}
-
-.acoes button:nth-child(2){
-    background:var(--blue);
-}
-
-.acoes button:nth-child(3){
-    background:var(--cyan);
-}
-
-.acoes button:nth-child(4){
-    background:var(--amber);
-    color:#1A1406;
-}
-
-.acoes button:nth-child(5){
-    background:var(--violet);
-}
-
-.acoes button:nth-child(6){
-    background:var(--surface-2);
-    color:var(--text);
-    border:1px solid var(--border-light);
-}
-
-/* =========================================================
-   RESULTADO / CARDS
-========================================================= */
+/* =========================
+RESULTADO — LOJAS / PTLS
+(equivalente ao .card + .tabela-container do
+Gerador de Abastecimento, mas com dois níveis de
+agrupamento: loja > ptl)
+========================= */
 
 #resultado{
+
     display:flex;
+
     flex-direction:column;
+
     gap:20px;
 }
 
 .loja-card{
-    background:var(--surface);
+
+    background:var(--surface-alt);
+
     border:1px solid var(--border);
-    border-radius:var(--radius-lg);
-    padding:20px;
+
+    border-radius:var(--radius);
+
+    padding:22px;
 }
 
 .loja-titulo{
+
     font-family:var(--font-display);
-    font-size:22px;
-    font-weight:700;
-    color:var(--blue);
-    margin-bottom:15px;
+
+    font-weight:600;
+
+    font-size:1.3rem;
+
+    letter-spacing:.05em;
+
     text-transform:uppercase;
-    letter-spacing:.3px;
+
+    color:var(--blue);
+
+    margin-bottom:16px;
+
+    border-left:3px solid var(--blue);
+
+    padding-left:12px;
 }
 
 .ptl-card{
-    background:var(--surface-2);
+
+    background:var(--surface);
+
     border:1px solid var(--border);
-    border-left:3px solid var(--amber);
+    border-left:4px solid var(--amber);
+
     border-radius:var(--radius);
-    padding:15px;
+
+    padding:18px;
+
     margin-bottom:15px;
 }
 
 .ptl-titulo{
+
     font-family:var(--font-display);
-    font-size:17px;
-    font-weight:700;
+
+    font-weight:600;
+
+    font-size:1.05rem;
+
     color:var(--red);
-    margin-bottom:10px;
+
+    margin-bottom:12px;
+}
+
+.tabela-container{
+
+    overflow:auto;
+
+    margin-top:10px;
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius);
 }
 
 .tabela{
+
     width:100%;
+
     border-collapse:collapse;
-    margin-top:10px;
-    font-size:13px;
+
+    min-width:600px;
+}
+
+.tabela thead{
+
+    background:var(--surface-alt);
+
+    color:var(--text-muted);
 }
 
 .tabela th{
-    background:var(--surface);
-    color:var(--muted);
-    padding:10px;
-    text-align:left;
+
+    font-family:var(--font-body);
+
+    font-size:.72rem;
+
+    font-weight:700;
+
+    letter-spacing:.08em;
+
     text-transform:uppercase;
-    font-size:11px;
-    letter-spacing:.4px;
-    border-bottom:1px solid var(--border-light);
+}
+
+.tabela th,
+.tabela td{
+
+    padding:12px;
+
+    border:1px solid var(--border);
+
+    text-align:center;
 }
 
 .tabela td{
-    padding:10px;
-    border-top:1px solid var(--border);
+
     font-family:var(--font-mono);
+
+    font-size:.85rem;
+
+    color:var(--text);
 }
 
 .tabela tbody tr:nth-child(even){
+
     background:rgba(255,255,255,.02);
 }
 
 .tabela tbody tr:hover{
-    background:rgba(76,143,209,.08);
+
+    background:rgba(76,143,209,.1);
 }
 
 .resumo-ptl{
-    margin-top:10px;
-    font-weight:600;
+
+    margin-top:12px;
+
+    font-family:var(--font-mono);
+
+    font-weight:700;
+
+    font-size:.85rem;
+
     color:var(--green);
-    font-family:var(--font-mono);
-    font-size:13px;
 }
 
-/* =========================================================
-   WHATSAPP
-========================================================= */
+/* =========================
+TEXTO WHATSAPP
+========================= */
 
-.whatsapp{
-    margin-top:25px;
-}
+.whatsapp textarea{
 
-.whatsapp h2{
-    font-family:var(--font-display);
-    color:var(--text);
-    margin-bottom:10px;
-    font-size:18px;
-}
-
-#textoWhatsapp{
     width:100%;
-    height:350px;
-    border:1px solid var(--border);
-    border-radius:var(--radius-lg);
-    padding:15px;
+
+    height:320px;
+
     resize:vertical;
-    background:var(--surface);
+
+    padding:16px;
+
+    background:var(--surface-alt);
+
+    border:1px solid var(--border-light);
+
+    border-radius:var(--radius-sm);
+
     color:var(--text);
+
     font-family:var(--font-mono);
-    font-size:13px;
+
+    font-size:.82rem;
 }
 
-/* =========================================================
-   IMPRESSÃO
-========================================================= */
+.whatsapp textarea:focus{
+
+    outline:none;
+
+    border-color:var(--amber);
+}
+
+/* =========================
+LOADING
+========================= */
+
+.loading{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(20,24,28,.92);
+
+    display:none;
+
+    justify-content:center;
+
+    align-items:center;
+
+    flex-direction:column;
+
+    z-index:9999;
+}
+
+.spinner{
+
+    width:70px;
+    height:70px;
+
+    border:6px solid var(--border-light);
+
+    border-top:6px solid var(--amber);
+
+    border-radius:50%;
+
+    animation:girar 1s linear infinite;
+}
+
+.loading p{
+
+    margin-top:20px;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    letter-spacing:.06em;
+
+    text-transform:uppercase;
+
+    color:var(--text-muted);
+
+    font-family:var(--font-display);
+}
+
+@keyframes girar{
+
+    100%{
+
+        transform:rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion:reduce){
+
+    .spinner{ animation-duration:2.4s; }
+
+    button:hover,
+    .upload-box:hover{ transform:none; }
+
+}
+
+/* =========================
+RESPONSIVO
+========================= */
+
+@media(max-width:768px){
+
+    .filtros{
+
+        flex-direction:column;
+    }
+
+}
+
+/* =========================
+IMPRESSÃO
+========================= */
 
 @media print{
 
-    .upload,
-    .filtros,
-    .acoes,
+    .card:has(.upload-area),
+    .card .filtros,
+    .card .acoes,
     .whatsapp,
-    header::after{
+    .loading,
+    .container h1::after{
+
         display:none;
     }
 
     body{
+
         background:white;
         color:#111;
     }
 
+    .card,
     .loja-card,
     .ptl-card{
+
         background:white;
         box-shadow:none;
         border:1px solid #ccc;
@@ -415,6 +726,7 @@ button:hover{
 
     .loja-titulo,
     .ptl-titulo{
+
         color:#111 !important;
     }
 }
