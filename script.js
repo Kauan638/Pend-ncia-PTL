@@ -1556,6 +1556,292 @@ async function baixarImagemResumo(){
 }
 
 
+// ========================================
+// BAIXAR IMAGEM — TOP 10 MAIORES PENDÊNCIAS
+// ========================================
+
+function obterTopPendencias(limite = 10){
+
+    const itens = [];
+
+    Object.keys(agrupado).forEach(loja=>{
+
+        Object.keys(agrupado[loja]).forEach(ptl=>{
+
+            const skuAgrupado = {};
+
+            agrupado[loja][ptl].forEach(item=>{
+
+                if(!skuAgrupado[item.sku]){
+
+                    skuAgrupado[item.sku] = {
+
+                        loja: item.loja,
+                        ptl: item.ptl,
+                        sku: item.sku,
+                        descricao: item.descricao,
+                        volumes: 0
+
+                    };
+
+                }
+
+                skuAgrupado[item.sku]
+                .volumes++;
+
+            });
+
+            itens.push(
+                ...Object.values(skuAgrupado)
+            );
+
+        });
+
+    });
+
+    return itens
+    .sort((a,b)=>b.volumes-a.volumes)
+    .slice(0,limite);
+
+}
+
+async function baixarImagemTop10(){
+
+    const top =
+    obterTopPendencias(10);
+
+    if(!top.length){
+
+        alert(
+            "Nenhum dado para gerar o ranking. Processe os arquivos primeiro."
+        );
+
+        return;
+
+    }
+
+    const medalhas = ["🥇","🥈","🥉"];
+
+    const maiorVolume =
+    top[0].volumes || 1;
+
+    const agora =
+    new Date().toLocaleString(
+        "pt-BR",
+        {
+            day:"2-digit",
+            month:"2-digit",
+            year:"numeric",
+            hour:"2-digit",
+            minute:"2-digit"
+        }
+    );
+
+    const card =
+    document.createElement(
+        "div"
+    );
+
+    card.style.width =
+    "1000px";
+
+    card.style.background =
+    "#ffffff";
+
+    card.style.fontFamily =
+    "'Inter','Segoe UI',sans-serif";
+
+    card.style.color =
+    "#1A1D21";
+
+    card.style.overflow =
+    "hidden";
+
+    card.style.borderRadius =
+    "10px";
+
+    card.style.border =
+    "1px solid #E2E5E9";
+
+    let linhas = "";
+
+    top.forEach((item,indice)=>{
+
+        const posicao =
+        indice + 1;
+
+        const destaque =
+        posicao <= 3;
+
+        const corBarra =
+        posicao === 1
+        ? "#E8564F"
+        : posicao <= 3
+        ? "#F2A93B"
+        : "#4C8FD1";
+
+        const larguraBarra =
+        Math.max(
+            8,
+            Math.round(
+                (item.volumes / maiorVolume) * 100
+            )
+        );
+
+        linhas += `
+        <div style="
+            display:flex;
+            align-items:center;
+            gap:16px;
+            padding:${destaque ? "18px" : "14px"} 28px;
+            border-bottom:1px solid #EEF0F2;
+            background:${destaque ? "#FFFBF2" : "#FFFFFF"};
+        ">
+
+            <div style="
+                width:38px;
+                flex-shrink:0;
+                text-align:center;
+                font-size:${destaque ? "24px" : "16px"};
+                font-weight:700;
+                font-family:'JetBrains Mono',Consolas,monospace;
+                color:${destaque ? "#1A1D21" : "#8B97A3"};
+            ">
+                ${medalhas[indice] || posicao + "º"}
+            </div>
+
+            <div style="flex:1;min-width:0;">
+
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:baseline;
+                    gap:12px;
+                ">
+
+                    <div style="min-width:0;">
+
+                        <div style="
+                            font-size:${destaque ? "16px" : "14px"};
+                            font-weight:700;
+                            color:#1A1D21;
+                            white-space:nowrap;
+                            overflow:hidden;
+                            text-overflow:ellipsis;
+                        ">
+                            ${item.sku} — ${item.descricao}
+                        </div>
+
+                        <div style="
+                            font-size:11px;
+                            color:#8B97A3;
+                            margin-top:2px;
+                        ">
+                            🏪 Loja ${item.loja} · 📦 ${item.ptl}
+                        </div>
+
+                    </div>
+
+                    <div style="
+                        font-family:'JetBrains Mono',Consolas,monospace;
+                        font-size:${destaque ? "22px" : "18px"};
+                        font-weight:700;
+                        color:${corBarra};
+                        white-space:nowrap;
+                        flex-shrink:0;
+                    ">
+                        ${item.volumes.toLocaleString("pt-BR")}
+                    </div>
+
+                </div>
+
+                <div style="
+                    margin-top:8px;
+                    height:6px;
+                    background:#EEF0F2;
+                    border-radius:3px;
+                    overflow:hidden;
+                ">
+                    <div style="
+                        height:100%;
+                        width:${larguraBarra}%;
+                        background:${corBarra};
+                        border-radius:3px;
+                    "></div>
+                </div>
+
+            </div>
+
+        </div>
+        `;
+
+    });
+
+    card.innerHTML = `
+
+        <div style="
+            background:#1D2329;
+            padding:22px 28px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            border-bottom:3px solid #E8564F;
+        ">
+
+            <div>
+                <div style="
+                    font-family:'Oswald','Segoe UI',sans-serif;
+                    font-size:22px;
+                    font-weight:700;
+                    letter-spacing:.03em;
+                    text-transform:uppercase;
+                    color:#ffffff;
+                ">🏆 Top ${top.length} Maiores Pendências</div>
+
+                <div style="
+                    font-size:12px;
+                    color:#9AA5B1;
+                    margin-top:4px;
+                ">Ranking por volume · gerado em ${agora}</div>
+            </div>
+
+        </div>
+
+        ${linhas}
+    `;
+
+    document.body.appendChild(
+        card
+    );
+
+    const canvas =
+    await html2canvas(
+        card,
+        {
+            scale:2
+        }
+    );
+
+    const link =
+    document.createElement(
+        "a"
+    );
+
+    link.download =
+    "pendencia-ptl-top10.png";
+
+    link.href =
+    canvas.toDataURL(
+        "image/png"
+    );
+
+    link.click();
+
+    card.remove();
+
+}
+
+
 function imprimirPorVolume(){
 
     const dados = [];
