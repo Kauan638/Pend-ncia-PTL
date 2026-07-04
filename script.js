@@ -30,25 +30,17 @@ async function processarArquivo(){
 
     try{
 
-        // Carrega as apanhas se houver arquivo
+        // Carrega apanhas e pulmões a partir do
+        // arquivo único de Posição de Endereços
         if(
             document.getElementById(
-                "arquivoApanha"
+                "arquivoEnderecos"
             )?.files[0]
         ){
 
-            await carregarApanhas();
+            await carregarEnderecos();
 
         }
-if(
-    document.getElementById(
-        "arquivoPulmao"
-    )?.files[0]
-){
-
-    await carregarPulmoes();
-
-}
         
         const nome =
         arquivo.name.toLowerCase();
@@ -205,14 +197,19 @@ function lerExcel(
 }
 
 // ========================================
-// LEITURA APANHAS
+// LEITURA POSIÇÃO DE ENDEREÇOS
+// (arquivo único: gera mapaApanhas e mapaPulmoes)
+// Layout: DEPOSITO;PAVILHAO;SUBDIVISAO;CODRUA;NROPREDIO;
+// NROAPARTAMENTO;NROSALA;ESPECIE_END;CODIGO;DESCRICAO;
+// EMBALAGEM;QTD_END;NORMA_PULMAO;NORMA_APANHA;
+// NORMA_MIUDEZA;TIPEND;STATUS_ENDERECO;CAT_1;CAT_2;CAT_3
 // ========================================
 
-async function carregarApanhas(){
+async function carregarEnderecos(){
 
     const arquivo =
     document.getElementById(
-        "arquivoApanha"
+        "arquivoEnderecos"
     ).files[0];
 
     if(!arquivo) return;
@@ -236,6 +233,7 @@ async function carregarApanhas(){
             );
 
             mapaApanhas = {};
+            mapaPulmoes = {};
 
             for(
                 let i = 1;
@@ -247,16 +245,58 @@ async function carregarApanhas(){
                 linhas[i]
                 .split(";");
 
-                const endereco =
-                colunas[0]?.trim();
+                const codrua =
+                colunas[3]?.trim();
+
+                const nropredio =
+                colunas[4]?.trim();
+
+                const nroapartamento =
+                colunas[5]?.trim();
+
+                const nrosala =
+                colunas[6]?.trim();
+
+                const especieEnd =
+                colunas[7]?.trim();
 
                 const sku =
-                colunas[1]?.trim();
+                colunas[8]?.trim();
 
-                if(sku){
+                const statusEndereco =
+                colunas[16]?.trim();
+
+                // Só endereços ocupados têm SKU válido
+                if(
+                    !sku ||
+                    statusEndereco !== "Ocupado"
+                ) continue;
+
+                const endereco =
+                `${codrua}.${nropredio}.${nroapartamento}.${nrosala}`;
+
+                if(especieEnd === "Apanha"){
 
                     mapaApanhas[sku] =
                     endereco;
+
+                }else if(especieEnd === "Pulmão"){
+
+                    if(!mapaPulmoes[sku]){
+
+                        mapaPulmoes[sku] = [];
+
+                    }
+
+                    if(
+                        !mapaPulmoes[sku]
+                        .includes(endereco)
+                    ){
+
+                        mapaPulmoes[sku]
+                        .push(endereco);
+
+                    }
 
                 }
 
@@ -268,101 +308,6 @@ async function carregarApanhas(){
                     mapaApanhas
                 ).length
             );
-
-            console.log(mapaApanhas);
-            
-            resolve();
-
-        };
-
-        reader.readAsText(
-            arquivo,
-            "latin1"
-        );
-
-    });
-
-}
-
-// ========================================
-// LEITURA PULMÕES
-// ========================================
-
-async function carregarPulmoes(){
-
-    const arquivo =
-    document.getElementById(
-        "arquivoPulmao"
-    ).files[0];
-
-    if(!arquivo) return;
-
-    const reader =
-    new FileReader();
-
-    return new Promise(resolve=>{
-
-        reader.onload =
-        function(e){
-
-            const texto =
-            e.target.result;
-
-            const linhas =
-            texto
-            .split(/\r?\n/)
-            .filter(
-                l => l.trim()
-            );
-
-            mapaPulmoes = {};
-
-            for(
-                let i = 1;
-                i < linhas.length;
-                i++
-            ){
-
-                const colunas =
-                linhas[i].split(";");
-
-                const rua =
-                colunas[1]?.trim();
-
-                const predio =
-                colunas[2]?.trim();
-
-                const apartamento =
-                colunas[3]?.trim();
-
-                const sala =
-                colunas[4]?.trim();
-
-                const sku =
-                colunas[5]?.trim();
-
-                if(!sku) continue;
-
-                const endereco =
-                `${rua}.${predio}.${apartamento}.${sala}`;
-
-                if(!mapaPulmoes[sku]){
-
-                    mapaPulmoes[sku] = [];
-
-                }
-
-                if(
-                    !mapaPulmoes[sku]
-                    .includes(endereco)
-                ){
-
-                    mapaPulmoes[sku]
-                    .push(endereco);
-
-                }
-
-            }
 
             console.log(
                 "Pulmões carregados:",

@@ -1,89 +1,215 @@
+/* =========================================================
+   PENDÊNCIA PTL — PAINEL INDUSTRIAL
+   Mesmo sistema de tokens do Gerador de Abastecimento PCP:
+   grafite + âmbar (ação) / verde (ok) / vermelho (crítico) /
+   azul (neutro), com ciano e violeta para ações extras.
+   Tipografia: Oswald (títulos) / Inter (texto) /
+   JetBrains Mono (dados numéricos e monoespaçados).
+========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
 }
 
-body{
-    font-family:'Segoe UI',sans-serif;
-    background:#f3f4f6;
-    color:#111827;
-    padding:20px;
+:root{
+
+    --bg:            #14181C;
+    --surface:       #1D2329;
+    --surface-2:     #232A31;
+    --border:        #2A323B;
+    --border-light:  #38424D;
+
+    --text:          #E7ECF1;
+    --muted:         #8B97A3;
+
+    --amber:         #F2A93B;
+    --green:         #3DCB82;
+    --red:           #E8564F;
+    --blue:          #4C8FD1;
+    --cyan:          #4FB8C7;
+    --violet:        #9B84D6;
+
+    --radius:        6px;
+    --radius-lg:     10px;
+
+    --font-display:  'Oswald', 'Segoe UI', sans-serif;
+    --font-body:     'Inter', 'Segoe UI', sans-serif;
+    --font-mono:     'JetBrains Mono', 'Consolas', monospace;
 }
+
+body{
+    font-family:var(--font-body);
+    background:var(--bg);
+    color:var(--text);
+    padding:24px;
+    max-width:1400px;
+    margin:0 auto;
+}
+
+/* =========================================================
+   CABEÇALHO
+========================================================= */
 
 header{
     text-align:center;
-    margin-bottom:25px;
+    margin-bottom:28px;
+    padding-bottom:18px;
+    position:relative;
 }
 
 header h1{
+    font-family:var(--font-display);
     font-size:32px;
-    color:#dc2626;
-    margin-bottom:5px;
+    font-weight:700;
+    letter-spacing:.5px;
+    color:var(--red);
+    margin-bottom:6px;
+    text-transform:uppercase;
 }
 
 header p{
-    color:#6b7280;
+    color:var(--muted);
+    font-size:14px;
 }
+
+/* faixa zebrada de assinatura */
+header::after{
+    content:"";
+    display:block;
+    height:4px;
+    width:100%;
+    margin-top:18px;
+    background:repeating-linear-gradient(
+        90deg,
+        var(--amber) 0px,
+        var(--amber) 18px,
+        var(--red) 18px,
+        var(--red) 36px,
+        var(--blue) 36px,
+        var(--blue) 54px,
+        var(--green) 54px,
+        var(--green) 72px
+    );
+    border-radius:2px;
+    opacity:.85;
+}
+
+/* =========================================================
+   UPLOAD
+========================================================= */
 
 .upload{
     display:flex;
-    gap:10px;
+    align-items:center;
+    gap:12px;
     justify-content:center;
     flex-wrap:wrap;
-    margin-bottom:25px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:18px;
+    margin-bottom:24px;
 }
 
-.upload input{
-    padding:10px;
-    background:white;
-    border:1px solid #d1d5db;
-    border-radius:8px;
+.upload label{
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+    color:var(--muted);
+    font-weight:600;
+}
+
+.upload input[type="file"]{
+    padding:9px 12px;
+    background:var(--surface-2);
+    color:var(--text);
+    border:1px solid var(--border-light);
+    border-radius:var(--radius);
+    font-family:var(--font-body);
+    font-size:13px;
+    max-width:220px;
+}
+
+.upload input[type="file"]::file-selector-button{
+    background:var(--surface);
+    color:var(--text);
+    border:1px solid var(--border-light);
+    border-radius:var(--radius);
+    padding:6px 10px;
+    margin-right:8px;
+    font-family:var(--font-body);
+    font-weight:600;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.upload input[type="file"]::file-selector-button:hover{
+    background:var(--border-light);
 }
 
 button{
     border:none;
     cursor:pointer;
-    border-radius:8px;
+    border-radius:var(--radius);
     padding:10px 16px;
     font-weight:600;
+    font-family:var(--font-body);
+    font-size:13px;
     transition:.2s;
+    color:var(--bg);
 }
 
 button:hover{
-    opacity:.9;
+    filter:brightness(1.1);
+    transform:translateY(-1px);
 }
 
 .upload button{
-    background:#2563eb;
-    color:white;
+    background:var(--amber);
+    color:#1A1406;
 }
+
+/* =========================================================
+   KPIs
+========================================================= */
 
 .kpis{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-    gap:15px;
-    margin-bottom:25px;
+    gap:14px;
+    margin-bottom:24px;
 }
 
 .kpi{
-    background:white;
-    border-radius:12px;
-    padding:20px;
-    box-shadow:0 2px 8px rgba(0,0,0,.08);
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:18px;
     text-align:center;
 }
 
 .kpi span{
     display:block;
-    font-size:32px;
+    font-family:var(--font-mono);
+    font-size:30px;
     font-weight:700;
-    color:#2563eb;
+    color:var(--blue);
 }
 
 .kpi label{
-    color:#6b7280;
+    color:var(--muted);
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:.4px;
 }
+
+/* =========================================================
+   FILTROS
+========================================================= */
 
 .filtros{
     display:grid;
@@ -93,32 +219,65 @@ button:hover{
 }
 
 .filtros input{
-    padding:12px;
-    border:1px solid #d1d5db;
-    border-radius:8px;
+    padding:11px 12px;
+    background:var(--surface);
+    color:var(--text);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    font-family:var(--font-body);
+    font-size:13px;
 }
+
+.filtros input::placeholder{
+    color:var(--muted);
+}
+
+.filtros input:focus{
+    outline:none;
+    border-color:var(--blue);
+}
+
+/* =========================================================
+   AÇÕES
+========================================================= */
 
 .acoes{
     display:flex;
     gap:10px;
     flex-wrap:wrap;
-    margin-bottom:20px;
+    margin-bottom:22px;
 }
 
 .acoes button:nth-child(1){
-    background:#16a34a;
-    color:white;
+    background:var(--green);
 }
 
 .acoes button:nth-child(2){
-    background:#2563eb;
-    color:white;
+    background:var(--blue);
 }
 
 .acoes button:nth-child(3){
-    background:#6b7280;
-    color:white;
+    background:var(--cyan);
 }
+
+.acoes button:nth-child(4){
+    background:var(--amber);
+    color:#1A1406;
+}
+
+.acoes button:nth-child(5){
+    background:var(--violet);
+}
+
+.acoes button:nth-child(6){
+    background:var(--surface-2);
+    color:var(--text);
+    border:1px solid var(--border-light);
+}
+
+/* =========================================================
+   RESULTADO / CARDS
+========================================================= */
 
 #resultado{
     display:flex;
@@ -127,30 +286,36 @@ button:hover{
 }
 
 .loja-card{
-    background:white;
-    border-radius:12px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
     padding:20px;
-    box-shadow:0 2px 8px rgba(0,0,0,.08);
 }
 
 .loja-titulo{
-    font-size:24px;
-    color:#1d4ed8;
-    margin-bottom:15px;
+    font-family:var(--font-display);
+    font-size:22px;
     font-weight:700;
+    color:var(--blue);
+    margin-bottom:15px;
+    text-transform:uppercase;
+    letter-spacing:.3px;
 }
 
 .ptl-card{
-    border:1px solid #e5e7eb;
-    border-radius:10px;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    border-left:3px solid var(--amber);
+    border-radius:var(--radius);
     padding:15px;
     margin-bottom:15px;
 }
 
 .ptl-titulo{
-    font-size:18px;
+    font-family:var(--font-display);
+    font-size:17px;
     font-weight:700;
-    color:#dc2626;
+    color:var(--red);
     margin-bottom:10px;
 }
 
@@ -158,59 +323,98 @@ button:hover{
     width:100%;
     border-collapse:collapse;
     margin-top:10px;
+    font-size:13px;
 }
 
 .tabela th{
-    background:#f3f4f6;
+    background:var(--surface);
+    color:var(--muted);
     padding:10px;
     text-align:left;
+    text-transform:uppercase;
+    font-size:11px;
+    letter-spacing:.4px;
+    border-bottom:1px solid var(--border-light);
 }
 
 .tabela td{
     padding:10px;
-    border-top:1px solid #e5e7eb;
+    border-top:1px solid var(--border);
+    font-family:var(--font-mono);
+}
+
+.tabela tbody tr:nth-child(even){
+    background:rgba(255,255,255,.02);
+}
+
+.tabela tbody tr:hover{
+    background:rgba(76,143,209,.08);
 }
 
 .resumo-ptl{
     margin-top:10px;
     font-weight:600;
-    color:#111827;
+    color:var(--green);
+    font-family:var(--font-mono);
+    font-size:13px;
 }
+
+/* =========================================================
+   WHATSAPP
+========================================================= */
 
 .whatsapp{
     margin-top:25px;
 }
 
 .whatsapp h2{
+    font-family:var(--font-display);
+    color:var(--text);
     margin-bottom:10px;
+    font-size:18px;
 }
 
 #textoWhatsapp{
     width:100%;
     height:350px;
-    border:1px solid #d1d5db;
-    border-radius:10px;
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
     padding:15px;
     resize:vertical;
-    background:white;
-    font-family:Consolas, monospace;
+    background:var(--surface);
+    color:var(--text);
+    font-family:var(--font-mono);
+    font-size:13px;
 }
+
+/* =========================================================
+   IMPRESSÃO
+========================================================= */
 
 @media print{
 
     .upload,
     .filtros,
     .acoes,
-    .whatsapp{
+    .whatsapp,
+    header::after{
         display:none;
     }
 
     body{
         background:white;
+        color:#111;
     }
 
-    .loja-card{
+    .loja-card,
+    .ptl-card{
+        background:white;
         box-shadow:none;
         border:1px solid #ccc;
+    }
+
+    .loja-titulo,
+    .ptl-titulo{
+        color:#111 !important;
     }
 }
