@@ -1866,6 +1866,392 @@ async function baixarImagemTop10(){
 }
 
 
+function imprimirMaioresPorLojaPtl(){
+
+    if(!Object.keys(agrupado).length){
+
+        alert(
+            "Nenhum dado para imprimir. Processe os arquivos primeiro."
+        );
+
+        return;
+
+    }
+
+    const corPorVolume = volumes=>{
+
+        if(volumes > 50) return "#E8564F";
+
+        if(volumes >= 20) return "#F2A93B";
+
+        if(volumes >= 10) return "#D7B740";
+
+        return "#3DCB82";
+
+    };
+
+    const lojas =
+    Object.keys(agrupado)
+    .sort((a,b)=>a.localeCompare(b,"pt-BR",{numeric:true}));
+
+    let totalGeral = 0;
+
+    let totalSkus = 0;
+
+    let htmlLojas = "";
+
+    lojas.forEach(loja=>{
+
+        const ptls =
+        Object.keys(agrupado[loja])
+        .sort((a,b)=>a.localeCompare(b,"pt-BR",{numeric:true}));
+
+        let volumesLoja = 0;
+
+        let skusLoja = 0;
+
+        let htmlPtls = "";
+
+        ptls.forEach(ptl=>{
+
+            const skuAgrupado = {};
+
+            agrupado[loja][ptl].forEach(item=>{
+
+                if(!skuAgrupado[item.sku]){
+
+                    skuAgrupado[item.sku] = {
+
+                        sku: item.sku,
+                        descricao: item.descricao,
+                        apanha: item.apanha || "Sem Apanha",
+                        pulmao: item.pulmao || "-",
+                        volumes: 0
+
+                    };
+
+                }
+
+                skuAgrupado[item.sku]
+                .volumes++;
+
+            });
+
+            const itensPtl =
+            Object.values(skuAgrupado)
+            .sort((a,b)=>b.volumes-a.volumes);
+
+            const volumesPtl =
+            itensPtl.reduce(
+                (s,x)=>s+x.volumes,
+                0
+            );
+
+            volumesLoja += volumesPtl;
+
+            skusLoja += itensPtl.length;
+
+            let linhas = "";
+
+            itensPtl.forEach(item=>{
+
+                linhas += `
+                <tr>
+                    <td class="colSku">${item.sku}</td>
+                    <td class="colDescricao">${item.descricao}</td>
+                    <td class="colApanha">${item.apanha}</td>
+                    <td class="colPulmao">${item.pulmao}</td>
+                    <td class="colVolumes" style="color:${corPorVolume(item.volumes)};">${item.volumes}</td>
+                </tr>
+                `;
+
+            });
+
+            htmlPtls += `
+            <div class="ptl-bloco">
+
+                <div class="ptl-titulo">
+                    <span>📦 ${ptl}</span>
+                    <span>${itensPtl.length} SKUs · ${volumesPtl.toLocaleString("pt-BR")} volumes</span>
+                </div>
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th class="colSku">SKU</th>
+                            <th class="colDescricao">Descrição</th>
+                            <th class="colApanha">Apanha</th>
+                            <th class="colPulmao">Pulmão</th>
+                            <th class="colVolumes">Volumes</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        ${linhas}
+                    </tbody>
+
+                </table>
+
+            </div>
+            `;
+
+        });
+
+        totalGeral += volumesLoja;
+
+        totalSkus += skusLoja;
+
+        htmlLojas += `
+        <div class="secao">
+
+            <div class="loja-titulo">
+                <span>🏪 LOJA ${loja}</span>
+                <span>${skusLoja} SKUs · ${volumesLoja.toLocaleString("pt-BR")} volumes</span>
+            </div>
+
+            ${htmlPtls}
+
+        </div>
+        `;
+
+    });
+
+    const agora =
+    new Date().toLocaleString(
+        "pt-BR",
+        {
+            day:"2-digit",
+            month:"2-digit",
+            year:"numeric",
+            hour:"2-digit",
+            minute:"2-digit"
+        }
+    );
+
+    let html = `
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Pendência PTL — Maiores Volumes por Loja e PTL</title>
+
+<style>
+
+@page{
+    size:A4 landscape;
+    margin:12mm;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Segoe UI',Arial,sans-serif;
+    color:#1A1D21;
+    margin:0;
+}
+
+.cabecalho{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    border-bottom:3px solid #F2A93B;
+    padding-bottom:10px;
+    margin-bottom:16px;
+}
+
+.cabecalho h1{
+    margin:0;
+    font-size:20px;
+    letter-spacing:.03em;
+    text-transform:uppercase;
+    color:#1D2329;
+}
+
+.cabecalho .meta{
+    text-align:right;
+    font-size:11px;
+    color:#5B6570;
+    line-height:1.5;
+}
+
+.secao{
+    margin-bottom:22px;
+}
+
+.loja-titulo{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:9px 14px;
+    border-radius:4px;
+    font-size:14px;
+    font-weight:700;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    margin-bottom:8px;
+    background:#1D2329;
+    color:#ffffff;
+    border-left:5px solid #4C8FD1;
+    page-break-after:avoid;
+    break-after:avoid;
+}
+
+.ptl-bloco{
+    margin-bottom:14px;
+}
+
+.ptl-titulo{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:6px 12px;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.03em;
+    text-transform:uppercase;
+    background:#EEF0F2;
+    color:#5B6570;
+    margin-bottom:4px;
+    page-break-after:avoid;
+    break-after:avoid;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    table-layout:fixed;
+    page-break-inside:auto;
+}
+
+thead{
+    display:table-header-group;
+}
+
+tr{
+    page-break-inside:avoid;
+    break-inside:avoid;
+}
+
+th{
+    background:#1D2329;
+    color:#fff;
+    padding:6px 8px;
+    font-size:10px;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    text-align:left;
+    border:1px solid #1D2329;
+}
+
+td{
+    border:1px solid #E2E5E9;
+    padding:5px 8px;
+    font-size:11px;
+    vertical-align:top;
+    word-wrap:break-word;
+}
+
+tbody tr:nth-child(even){
+    background:#FAFBFC;
+}
+
+.colSku{ width:10%; }
+.colDescricao{ width:38%; }
+.colApanha{ width:16%; }
+.colPulmao{ width:26%; }
+.colVolumes{
+    width:10%;
+    text-align:center;
+    font-weight:700;
+}
+
+.rodape{
+    margin-top:10px;
+    text-align:right;
+    font-size:11px;
+    color:#5B6570;
+}
+
+@media print{
+
+    .loja-titulo,
+    th{
+        -webkit-print-color-adjust:exact;
+        print-color-adjust:exact;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="cabecalho">
+
+    <h1>
+        🏆 Pendência PTL — Maiores Volumes por Loja e PTL
+    </h1>
+
+    <div class="meta">
+        Gerado em ${agora}<br>
+        Total geral: <b>${totalGeral.toLocaleString("pt-BR")}</b> volumes
+        em <b>${totalSkus.toLocaleString("pt-BR")}</b> SKUs
+    </div>
+
+</div>
+
+${htmlLojas}
+
+<div class="rodape">
+    Pendência PTL · relatório gerado automaticamente
+</div>
+
+</body>
+</html>
+`;
+
+    const janela =
+    window.open(
+        "",
+        "_blank"
+    );
+
+    if(!janela){
+
+        alert(
+            "O navegador bloqueou a janela de impressão."
+        );
+
+        return;
+
+    }
+
+    janela.document.open();
+
+    janela.document.write(
+        html
+    );
+
+    janela.document.close();
+
+    setTimeout(()=>{
+
+        janela.focus();
+
+        janela.print();
+
+    },500);
+
+}
+
 function imprimirPorVolume(){
 
     const skuAgrupado = {};
