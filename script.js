@@ -1562,13 +1562,11 @@ async function baixarImagemResumo(){
 
 function obterTopPendencias(limite = 10){
 
-    const itens = [];
+    const skuAgrupado = {};
 
     Object.keys(agrupado).forEach(loja=>{
 
         Object.keys(agrupado[loja]).forEach(ptl=>{
-
-            const skuAgrupado = {};
 
             agrupado[loja][ptl].forEach(item=>{
 
@@ -1576,11 +1574,11 @@ function obterTopPendencias(limite = 10){
 
                     skuAgrupado[item.sku] = {
 
-                        loja: item.loja,
-                        ptl: item.ptl,
                         sku: item.sku,
                         descricao: item.descricao,
-                        volumes: 0
+                        volumes: 0,
+                        lojas: new Set(),
+                        ptls: new Set()
 
                     };
 
@@ -1589,17 +1587,28 @@ function obterTopPendencias(limite = 10){
                 skuAgrupado[item.sku]
                 .volumes++;
 
-            });
+                skuAgrupado[item.sku]
+                .lojas.add(item.loja);
 
-            itens.push(
-                ...Object.values(skuAgrupado)
-            );
+                skuAgrupado[item.sku]
+                .ptls.add(item.ptl);
+
+            });
 
         });
 
     });
 
-    return itens
+    return Object.values(skuAgrupado)
+    .map(item=>({
+
+        sku: item.sku,
+        descricao: item.descricao,
+        volumes: item.volumes,
+        qtdLojas: item.lojas.size,
+        qtdPtls: item.ptls.size
+
+    }))
     .sort((a,b)=>b.volumes-a.volumes)
     .slice(0,limite);
 
@@ -1737,7 +1746,7 @@ async function baixarImagemTop10(){
                             color:#8B97A3;
                             margin-top:2px;
                         ">
-                            🏪 Loja ${item.loja} · 📦 ${item.ptl}
+                            🏪 ${item.qtdLojas} ${item.qtdLojas === 1 ? "loja" : "lojas"} · 📦 ${item.qtdPtls} ${item.qtdPtls === 1 ? "PTL" : "PTLs"}
                         </div>
 
                     </div>
