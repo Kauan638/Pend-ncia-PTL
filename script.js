@@ -1891,26 +1891,24 @@ function imprimirMaioresPorLojaPtl(){
     };
 
     const lojas =
-    Object.keys(agrupado)
-    .sort((a,b)=>a.localeCompare(b,"pt-BR",{numeric:true}));
+    Object.keys(agrupado);
 
     let totalGeral = 0;
 
     let totalSkus = 0;
 
-    let htmlLojas = "";
+    const dadosLojas = [];
 
     lojas.forEach(loja=>{
 
         const ptls =
-        Object.keys(agrupado[loja])
-        .sort((a,b)=>a.localeCompare(b,"pt-BR",{numeric:true}));
+        Object.keys(agrupado[loja]);
 
         let volumesLoja = 0;
 
         let skusLoja = 0;
 
-        let htmlPtls = "";
+        const dadosPtls = [];
 
         ptls.forEach(ptl=>{
 
@@ -1951,9 +1949,50 @@ function imprimirMaioresPorLojaPtl(){
 
             skusLoja += itensPtl.length;
 
+            dadosPtls.push({
+
+                ptl,
+                itens: itensPtl,
+                volumes: volumesPtl
+
+            });
+
+        });
+
+        dadosPtls.sort(
+            (a,b)=>b.volumes-a.volumes
+        );
+
+        totalGeral += volumesLoja;
+
+        totalSkus += skusLoja;
+
+        dadosLojas.push({
+
+            loja,
+            ptls: dadosPtls,
+            volumes: volumesLoja,
+            skus: skusLoja
+
+        });
+
+    });
+
+    dadosLojas.sort(
+        (a,b)=>b.volumes-a.volumes
+    );
+
+    let htmlLojas = "";
+
+    dadosLojas.forEach(dadosLoja=>{
+
+        let htmlPtls = "";
+
+        dadosLoja.ptls.forEach(dadosPtl=>{
+
             let linhas = "";
 
-            itensPtl.forEach(item=>{
+            dadosPtl.itens.forEach(item=>{
 
                 linhas += `
                 <tr>
@@ -1971,8 +2010,8 @@ function imprimirMaioresPorLojaPtl(){
             <div class="ptl-bloco">
 
                 <div class="ptl-titulo">
-                    <span>📦 ${ptl}</span>
-                    <span>${itensPtl.length} SKUs · ${volumesPtl.toLocaleString("pt-BR")} volumes</span>
+                    <span>📦 ${dadosPtl.ptl}</span>
+                    <span>${dadosPtl.itens.length} SKUs · ${dadosPtl.volumes.toLocaleString("pt-BR")} volumes</span>
                 </div>
 
                 <table>
@@ -1998,16 +2037,12 @@ function imprimirMaioresPorLojaPtl(){
 
         });
 
-        totalGeral += volumesLoja;
-
-        totalSkus += skusLoja;
-
         htmlLojas += `
         <div class="secao">
 
             <div class="loja-titulo">
-                <span>🏪 LOJA ${loja}</span>
-                <span>${skusLoja} SKUs · ${volumesLoja.toLocaleString("pt-BR")} volumes</span>
+                <span>🏪 LOJA ${dadosLoja.loja}</span>
+                <span>${dadosLoja.skus} SKUs · ${dadosLoja.volumes.toLocaleString("pt-BR")} volumes</span>
             </div>
 
             ${htmlPtls}
