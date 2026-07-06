@@ -2041,7 +2041,6 @@ body{
 
 .secao{
     margin-bottom:22px;
-    page-break-inside:avoid;
 }
 
 .secao-titulo{
@@ -2055,12 +2054,15 @@ body{
     letter-spacing:.04em;
     text-transform:uppercase;
     margin-bottom:6px;
+    page-break-after:avoid;
+    break-after:avoid;
 }
 
 table{
     width:100%;
     border-collapse:collapse;
     table-layout:fixed;
+    page-break-inside:auto;
 }
 
 thead{
@@ -2069,6 +2071,7 @@ thead{
 
 tr{
     page-break-inside:avoid;
+    break-inside:avoid;
 }
 
 th{
