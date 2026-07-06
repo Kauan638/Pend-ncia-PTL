@@ -782,14 +782,18 @@ skuAgrupado[chave] = {
     apanha:
     item.apanha || "Sem Apanha",
 
-    pulmao:
-    item.pulmao || "-",
+    pulmoes: new Set(),
 
     volumes: 0
 
 };
 
                 }
+
+                skuAgrupado[chave]
+                .pulmoes.add(
+                    item.pulmao || "-"
+                );
 
                 skuAgrupado[chave]
                 .volumes++;
@@ -799,6 +803,16 @@ skuAgrupado[chave] = {
             Object.values(
                 skuAgrupado
             ).forEach(item=>{
+
+const listaPulmoes =
+[...item.pulmoes].sort();
+
+const pulmaoTexto =
+listaPulmoes.length <= 5
+? listaPulmoes.join(", ")
+: listaPulmoes.slice(0,5).join(", ")
+    + ` +${listaPulmoes.length - 5}`;
+
 htmlTabela +=
 `
 <tr>
@@ -806,12 +820,13 @@ htmlTabela +=
     <td>${item.descricao}</td>
     <td>${item.data || "-"}</td>
     <td>${item.apanha}</td>
-    <td>${item.pulmao}</td>
+    <td>${pulmaoTexto}</td>
     <td>${item.volumes}</td>
 </tr>
 `;
 
             });
+
 
             htmlTabela +=
             `
