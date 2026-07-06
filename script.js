@@ -1853,7 +1853,7 @@ async function baixarImagemTop10(){
 
 function imprimirPorVolume(){
 
-    const dados = [];
+    const skuAgrupado = {};
 
     Object.keys(agrupado).forEach(loja=>{
 
@@ -1861,40 +1861,64 @@ function imprimirPorVolume(){
 
             const itens = agrupado[loja][ptl];
 
-            const skuAgrupado = {};
-
             itens.forEach(item=>{
 
                 if(!skuAgrupado[item.sku]){
 
                     skuAgrupado[item.sku] = {
 
-                        loja: item.loja,
-                        ptl: item.ptl,
                         sku: item.sku,
                         descricao: item.descricao,
-                        apanha: item.apanha || "Sem Apanha",
-                        pulmao: item.pulmao || "-",
-                        volumes: 0
+                        volumes: 0,
+                        lojas: new Set(),
+                        ptls: new Set(),
+                        apanhas: new Set(),
+                        pulmoes: new Set()
 
                     };
 
                 }
 
-                skuAgrupado[item.sku]
-                .volumes++;
+                const registro =
+                skuAgrupado[item.sku];
+
+                registro.volumes++;
+
+                registro.lojas.add(item.loja);
+
+                registro.ptls.add(item.ptl);
+
+                registro.apanhas.add(
+                    item.apanha || "Sem Apanha"
+                );
+
+                registro.pulmoes.add(
+                    item.pulmao || "-"
+                );
 
             });
-
-            dados.push(
-                ...Object.values(
-                    skuAgrupado
-                )
-            );
 
         });
 
     });
+
+    const dados =
+    Object.values(skuAgrupado)
+    .map(item=>({
+
+        sku: item.sku,
+        descricao: item.descricao,
+        volumes: item.volumes,
+        qtdLojas: item.lojas.size,
+        qtdPtls: item.ptls.size,
+        apanha: item.apanhas.size === 1
+            ? [...item.apanhas][0]
+            : "Diversos",
+        pulmao: item.pulmoes.size === 1
+            ? [...item.pulmoes][0]
+            : "Diversos"
+
+    }));
 
     if(!dados.length){
 
@@ -2146,8 +2170,8 @@ tbody tr:nth-child(even){
 
                 <thead>
                     <tr>
-                        <th class="colLoja">Loja</th>
-                        <th class="colPtl">PTL</th>
+                        <th class="colLoja">Lojas</th>
+                        <th class="colPtl">PTLs</th>
                         <th class="colSku">SKU</th>
                         <th class="colDescricao">Descrição</th>
                         <th class="colApanha">Apanha</th>
@@ -2165,8 +2189,8 @@ tbody tr:nth-child(even){
 
             html += `
             <tr>
-                <td class="colLoja">${item.loja}</td>
-                <td class="colPtl">${item.ptl}</td>
+                <td class="colLoja">${item.qtdLojas}</td>
+                <td class="colPtl">${item.qtdPtls}</td>
                 <td class="colSku">${item.sku}</td>
                 <td class="colDescricao">${item.descricao}</td>
                 <td class="colApanha">${item.apanha}</td>
