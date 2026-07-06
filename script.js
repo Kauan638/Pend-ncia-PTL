@@ -1904,21 +1904,32 @@ function imprimirPorVolume(){
 
     const dados =
     Object.values(skuAgrupado)
-    .map(item=>({
+    .map(item=>{
 
-        sku: item.sku,
-        descricao: item.descricao,
-        volumes: item.volumes,
-        qtdLojas: item.lojas.size,
-        qtdPtls: item.ptls.size,
-        apanha: item.apanhas.size === 1
-            ? [...item.apanhas][0]
-            : "Diversos",
-        pulmao: item.pulmoes.size === 1
-            ? [...item.pulmoes][0]
-            : "Diversos"
+        const listaPulmoes =
+        [...item.pulmoes].sort();
 
-    }));
+        const pulmaoTexto =
+        listaPulmoes.length <= 5
+        ? listaPulmoes.join(", ")
+        : listaPulmoes.slice(0,5).join(", ")
+            + ` +${listaPulmoes.length - 5}`;
+
+        return {
+
+            sku: item.sku,
+            descricao: item.descricao,
+            volumes: item.volumes,
+            qtdLojas: item.lojas.size,
+            qtdPtls: item.ptls.size,
+            apanha: item.apanhas.size === 1
+                ? [...item.apanhas][0]
+                : "Diversos",
+            pulmao: pulmaoTexto
+
+        };
+
+    });
 
     if(!dados.length){
 
