@@ -35,13 +35,66 @@
         </p>
 
         <!-- ===================================== -->
+        <!-- SINCRONIZAÇÃO AUTOMÁTICA -->
+        <!-- ===================================== -->
+
+        <div class="card">
+
+            <h2>
+                🔗 Sincronização Automática
+            </h2>
+
+            <p class="sync-descricao">
+                Conecta a pasta "Pendência PTL" (dentro da sua pasta mestre) uma única vez.
+                A partir daí, o site detecta sozinho o arquivo Velox (.xlsx/.csv) e o de
+                Posição de Endereços (.txt) e reprocessa automaticamente sempre que
+                algum deles for atualizado no disco.
+            </p>
+
+            <div class="sync-painel">
+
+                <span id="syncStatus" class="sync-off">
+                    <span class="sync-dot"></span>
+                    Sincronização desligada
+                </span>
+
+                <button
+                    class="upload-btn"
+                    id="btnConectarPasta"
+                    onclick="conectarPastaPTL()">
+
+                    🔗 Conectar Pasta
+
+                </button>
+
+                <button
+                    class="upload-btn sync-btn-desconectar"
+                    id="btnDesconectarPasta"
+                    style="display:none;"
+                    onclick="desconectarPastaPTL()">
+
+                    Desconectar
+
+                </button>
+
+                <span
+                    id="syncUltimaChecagem"
+                    class="sync-info"
+                    style="display:none;">
+                </span>
+
+            </div>
+
+        </div>
+
+        <!-- ===================================== -->
         <!-- UPLOADS -->
         <!-- ===================================== -->
 
         <div class="card">
 
             <h2>
-                Arquivos
+                Arquivos (upload manual)
             </h2>
 
             <div class="upload-area">

@@ -132,6 +132,93 @@ CARDS
 }
 
 /* =========================
+SINCRONIZAÇÃO AUTOMÁTICA
+========================= */
+
+.sync-descricao{
+    color:var(--text-muted);
+    font-size:.85rem;
+    line-height:1.6;
+    margin-bottom:20px;
+    max-width:900px;
+}
+
+.sync-painel{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    flex-wrap:wrap;
+}
+
+#syncStatus{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 16px;
+    border-radius:20px;
+    font-size:.8rem;
+    font-weight:700;
+    letter-spacing:.03em;
+    text-transform:uppercase;
+}
+
+.sync-dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+}
+
+.sync-off{
+    background:var(--red-dim);
+    color:var(--red);
+}
+
+.sync-off .sync-dot{
+    background:var(--red);
+}
+
+.sync-scan{
+    background:var(--blue-dim);
+    color:var(--blue);
+}
+
+.sync-scan .sync-dot{
+    background:var(--blue);
+    animation:pulsar 1s infinite;
+}
+
+.sync-on{
+    background:var(--green-dim);
+    color:var(--green);
+}
+
+.sync-on .sync-dot{
+    background:var(--green);
+    animation:pulsar 1.6s infinite;
+}
+
+@keyframes pulsar{
+    0%,100%{ opacity:1; }
+    50%{ opacity:.35; }
+}
+
+.sync-btn-desconectar{
+    border-color:var(--red) !important;
+    color:var(--red) !important;
+}
+
+.sync-btn-desconectar:hover{
+    background:var(--red) !important;
+    color:#fff !important;
+}
+
+.sync-info{
+    color:var(--text-muted);
+    font-family:var(--font-mono);
+    font-size:.78rem;
+}
+
+/* =========================
 UPLOADS
 ========================= */
 
@@ -724,6 +811,7 @@ IMPRESSÃO
     .container h1::after,
     .subtitulo,
     .card:has(.upload-area),
+    .card:has(.sync-painel),
     .card:has(.filtros),
     .card .acoes,
     .card h2,
