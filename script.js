@@ -9,6 +9,79 @@ let mapaApanhas = {};
 let mapaPulmoes = {};
 
 // ========================================
+// PAVILHÕES — FAIXAS DE CODRUA
+// (conforme arquivos oficiais Pavilhão 1/2/3 e Perecível)
+// ========================================
+
+const FAIXAS_PAVILHAO = {
+
+    "Pavilhão 1": [[3,14],[21,24],[51,65]],
+    "Pavilhão 2": [[71,106]],
+    "Pavilhão 3": [[311,317]],
+    "Perecível":  [[26,27],[29,31]]
+
+};
+
+// Máximo de endereços de pulmão exibidos por item
+// em todas as folhas de impressão
+const MAX_PULMOES_POR_ITEM = 3;
+
+function extrairCodrua(endereco){
+
+    if(!endereco) return null;
+
+    const codrua =
+    String(endereco)
+    .split(".")[0]
+    .trim();
+
+    return codrua || null;
+
+}
+
+function obterPavilhaoPorCodrua(codrua){
+
+    const num = Number(codrua);
+
+    if(isNaN(num)) return "Sem Pavilhão";
+
+    for(const [nome, faixas] of Object.entries(FAIXAS_PAVILHAO)){
+
+        for(const [min,max] of faixas){
+
+            if(num >= min && num <= max) return nome;
+
+        }
+
+    }
+
+    return "Sem Pavilhão";
+
+}
+
+// Limita a lista de endereços de pulmão a
+// MAX_PULMOES_POR_ITEM, indicando quando há mais
+function formatarPulmoes(enderecos){
+
+    const lista =
+    [...(enderecos || [])].sort();
+
+    const limitados =
+    lista.slice(0, MAX_PULMOES_POR_ITEM);
+
+    let texto = limitados.join(" | ");
+
+    if(lista.length > MAX_PULMOES_POR_ITEM){
+
+        texto += ` (+${lista.length - MAX_PULMOES_POR_ITEM})`;
+
+    }
+
+    return texto;
+
+}
+
+// ========================================
 // NOME DO ARQUIVO SELECIONADO
 // ========================================
 
@@ -433,6 +506,23 @@ function tratarDados(dados){
 
         }
 
+        const enderecoApanha =
+        mapaApanhas[
+            skuPrincipal
+        ] || "";
+
+        const enderecosPulmao =
+        mapaPulmoes[
+            skuPrincipal
+        ] || [];
+
+        // Pavilhão é definido pela rua (CODRUA) do
+        // endereço de Apanha; se não houver Apanha,
+        // usa a rua do primeiro Pulmão como referência
+        const codruaReferencia =
+        extrairCodrua(enderecoApanha) ||
+        extrairCodrua(enderecosPulmao[0]);
+
         return{
 
             loja,
@@ -461,16 +551,17 @@ function tratarDados(dados){
             "",
 
             apanha:
-            mapaApanhas[
-                skuPrincipal
-            ] || "Sem Apanha",
+            enderecoApanha || "Sem Apanha",
 
             pulmao:
-            (
-                mapaPulmoes[
-                    skuPrincipal
-                ] || []
-            ).join(" | ")
+            formatarPulmoes(
+                enderecosPulmao
+            ),
+
+            pavilhao:
+            obterPavilhaoPorCodrua(
+                codruaReferencia
+            )
 
         };
 
@@ -626,6 +717,21 @@ function aplicarFiltros(){
     .getElementById("filtroData")
     .value;
 
+    const checkboxesPavilhao =
+    document.querySelectorAll(
+        ".filtro-pavilhao:checked"
+    );
+
+    const pavilhoesSelecionados =
+    [...checkboxesPavilhao].map(
+        cb => cb.value
+    );
+
+    // Se nenhum checkbox estiver marcado, considera
+    // todos os pavilhões (nenhum filtro aplicado)
+    const todosPavilhoes =
+    pavilhoesSelecionados.length === 0;
+
     dadosFiltrados =
     dadosOriginais.filter(item=>{
 
@@ -668,6 +774,14 @@ function aplicarFiltros(){
             (
                 filtroData === "" ||
                 dataItem === filtroData
+            )
+
+            &&
+
+            (
+                todosPavilhoes ||
+                pavilhoesSelecionados
+                .includes(item.pavilhao)
             )
 
         );

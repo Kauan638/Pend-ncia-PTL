@@ -515,6 +515,83 @@ FILTROS
     border-color:var(--amber);
 }
 
+.filtro-pavilhoes{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+
+    flex-wrap:wrap;
+
+    margin-top:16px;
+
+    padding-top:16px;
+
+    border-top:1px solid var(--border);
+}
+
+.filtro-pavilhoes-label{
+
+    font-family:var(--font-display);
+
+    font-size:12px;
+
+    font-weight:600;
+
+    letter-spacing:0.5px;
+
+    text-transform:uppercase;
+
+    color:var(--text-muted);
+}
+
+.chk-pavilhao{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:7px;
+
+    padding:7px 12px;
+
+    background:var(--surface-alt);
+
+    border:1px solid var(--border-light);
+
+    border-radius:var(--radius-sm);
+
+    color:var(--text);
+
+    font-size:13px;
+
+    cursor:pointer;
+
+    user-select:none;
+
+    transition:border-color .15s, color .15s;
+}
+
+.chk-pavilhao:has(input:checked){
+
+    border-color:var(--amber);
+
+    color:var(--amber);
+}
+
+.chk-pavilhao input{
+
+    accent-color:var(--amber);
+
+    width:15px;
+
+    height:15px;
+
+    cursor:pointer;
+}
+
 /* =========================
 RESULTADO — LOJAS / PTLS
 (equivalente ao .card + .tabela-container do
